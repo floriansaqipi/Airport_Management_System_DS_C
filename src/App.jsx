@@ -7,6 +7,7 @@ import Lounge from './Components/Lounge/Lounge'
 import Travelers from './Components/Travelers/Travelers'
 import Subscriber from './Components/Subscribers/Subscribe'
 import Footer from './Components/Footer/Footer'
+import Flights from './Components/Flights/Flights'
 
 import './main.scss'
 
@@ -18,11 +19,12 @@ function App() {
     <Home />
     <Search />
     <Support />
+    <Flights />
     <Info />
     <Lounge />
     <Travelers />
     <Subscriber />
-    <Footer />
+    <Footer /> 
    </div>
   )
 }
