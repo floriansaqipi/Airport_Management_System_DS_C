@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import DataTable from '../Flights/DataTable';
+import DataTable from '../../util/DataTable';
 import { format } from 'date-fns';
 import { Container } from "@mui/material";
 
