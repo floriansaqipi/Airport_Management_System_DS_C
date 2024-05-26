@@ -7,22 +7,14 @@ import Lounge from './Components/Lounge/Lounge'
 import Travelers from './Components/Travelers/Travelers'
 import Subscriber from './Components/Subscribers/Subscribe'
 import Footer from './Components/Footer/Footer'
-
+import Login from './Components/Users/Login'
 import './main.scss'
 
 
 function App() {
   return (
    <div>
-    <Navbar />
-    <Home />
-    <Search />
-    <Support />
-    <Info />
-    <Lounge />
-    <Travelers />
-    <Subscriber />
-    <Footer />
+    <Login/>
    </div>
   )
 }
