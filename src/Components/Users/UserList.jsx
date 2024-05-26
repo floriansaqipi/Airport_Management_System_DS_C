@@ -14,6 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
 import { styled } from '@mui/material/styles';
+import SearchBarForUsers from './SearchBarForUsers';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
@@ -56,11 +57,13 @@ function UserList() {
   const [error, setError] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjIiLCJpYXQiOjE3MTY2ODA2ODAsImV4cCI6MTcxNjY4MTM4MH0.AcmLd3SmLn-9167kNzj9b3yYyGBw8TkfE9shqj33G6HdTuTGnq336yRocAU_1kSUhEXO3R_8n0i8DyHQdfVFig";
+        const token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbXBsb3llZTIiLCJpYXQiOjE3MTY3NjM5NjcsImV4cCI6MTcxNjc2NzU2N30.9dYK2sPqlVABdw71YRPzqWsqCKQcBk-hjG_OkymnzCCUfjoWIAU-Y-1xODHsjYC0anOBJgiyTJpITQNSsaxb4Q";
         const response = await fetch('/api/private/users', {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -91,7 +94,14 @@ function UserList() {
     fetchData();
   }, []);
 
-  
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    const filtered = data.filter((item) =>
+      item.username.toLowerCase().includes(query.toLowerCase()) ||
+      item.userID.toString().includes(query.toLowerCase())
+    );
+    setFilteredData(filtered);
+  };
   
 
   const handleChangePage = (event, newPage) => {
@@ -133,6 +143,7 @@ function UserList() {
             >
               UsersList
             </Typography>
+            <SearchBarForUsers handleSearch={handleSearch} />
           </Toolbar>
         </AppBar>
       </Box>
@@ -148,11 +159,25 @@ function UserList() {
                 ))}
               </TableRow>
             </StyledTableHeader>
+            <TableBody>
+              {(searchQuery ? filteredData : data)
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.userID}>
+                    {columns.map((column) => (
+                      <TableCell key={column.id} align={column.align}>
+                        {column.format ? column.format(row[column.id]) : row[column.id]}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+            </TableBody>
           </Table>
         </StyledTableContainer>
         <StyledTablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
+          count={(searchQuery ? filteredData : data).length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
