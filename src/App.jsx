@@ -9,20 +9,22 @@ import Subscriber from './Components/Subscribers/Subscribe'
 import Footer from './Components/Footer/Footer'
 
 import './main.scss'
+import Tickets from './Components/Tickets/Tickets'
 
 
 function App() {
   return (
    <div>
-    <Navbar />
-    <Home />
+    {/* <Navbar /> */}
+    {/* <Home />
     <Search />
     <Support />
     <Info />
     <Lounge />
     <Travelers />
-    <Subscriber />
-    <Footer />
+    <Subscriber /> */}
+    <Tickets />
+    {/* <Footer /> */}
    </div>
   )
 }
