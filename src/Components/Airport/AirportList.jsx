@@ -16,9 +16,6 @@ const AirportList = () => {
   const [airportToDelete, setAirportToDelete] = useState(null);
   const itemsPerPage = 5;
 
-  useEffect(() => {
-    loadAirport();
-  }, []);
 
   const loadAirport = async () => {
     try {
@@ -29,6 +26,10 @@ const AirportList = () => {
       alert('There was an error fetching the airports! Check the console for more details.');
     }
   };
+
+  useEffect(() => {
+    loadAirport();
+  }, []);
 
   const handleAddAirport = () => {
     setCurrentAirport(null);
