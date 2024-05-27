@@ -193,6 +193,87 @@ const Navbar = () => {
                     Tickets
                   </NavLink>
                 </Button>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
+                >
+                  <NavLink
+                    to="/airports"
+                    style={{
+                      display: "block",
+                      padding: "10px",
+                      color: "hsl(240, 1%, 48%)",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Airports
+                  </NavLink>
+                </Button>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
+                >
+                  <NavLink
+                    to="/baggage"
+                    style={{
+                      display: "block",
+                      padding: "10px",
+                      color: "hsl(240, 1%, 48%)",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Baggage
+                  </NavLink>
+                </Button>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
+                >
+                  <NavLink
+                    to="/passengers"
+                    style={{
+                      display: "block",
+                      padding: "10px",
+                      color: "hsl(240, 1%, 48%)",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Passengers
+                  </NavLink>
+                </Button>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
+                >
+                  <NavLink
+                    to="/employees"
+                    style={{
+                      display: "block",
+                      padding: "10px",
+                      color: "hsl(240, 1%, 48%)",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Employees
+                  </NavLink>
+                </Button>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
+                >
+                  <NavLink
+                    to="/users"
+                    style={{
+                      display: "block",
+                      padding: "10px",
+                      color: "hsl(240, 1%, 48%)",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Users
+                  </NavLink>
+                </Button>
+                
               </Box>
 
               <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex", justifyContent: "right" } }}>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import AirportModal from './AirportModal';
-import { apiService } from '../../services/apiService';
+import { apiService } from '../../apiService';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
 
 const AirportList = () => {
