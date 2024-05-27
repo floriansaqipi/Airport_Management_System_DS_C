@@ -1,3 +1,4 @@
+
 import Navbar from './Components/Navbar/Navbar'
 import Home from './Components/Home/Home'
 import Search from './Components/Search/Search'
@@ -12,13 +13,6 @@ import UserList from './Components/Users/UserList'
 import './main.scss'
 
 
-// function App() {
-//   return (
-//    <div>
-//    <Login/>
-//    </div>
-//   )
-// }
 function App() {
   return (
    <div>
