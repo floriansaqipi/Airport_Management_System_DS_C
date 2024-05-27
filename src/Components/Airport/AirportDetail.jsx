@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Card, CardContent, Typography, Button, Box } from '@mui/material';
-import { apiService } from '../apiService';
+import { apiService } from '../../services/apiService';
 
 
 const AirportDetail = () => {

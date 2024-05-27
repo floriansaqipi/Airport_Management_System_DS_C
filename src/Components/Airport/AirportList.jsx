@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
-import { apiService } from '../apiService';
+import AirportModal from './AirportModal';
+import { apiService } from '../../services/apiService';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
+
 const AirportList = () => {
   const [airport, setAirport] = useState([]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentAirport, setCurrentAirport] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
@@ -29,10 +32,12 @@ const AirportList = () => {
 
   const handleAddAirport = () => {
     setCurrentAirport(null);
+    setModalIsOpen(true);
   };
 
   const handleEditAirport = (airport) => {
     setCurrentAirport(airport);
+    setModalIsOpen(true);
   };
 
   const handleDeleteAirport = (id) => {
@@ -52,6 +57,7 @@ const AirportList = () => {
   };
 
   const handleSaveAirport = async () => {
+    setModalIsOpen(false);
     await loadAirport();
   };
 
@@ -147,6 +153,12 @@ const AirportList = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <AirportModal
+        isOpen={modalIsOpen}
+        onClose={() => setModalIsOpen(false)}
+        onSave={handleSaveAirport}
+        airportData={currentAirport}
+      />
     </div>
   );
 };
