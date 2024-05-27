@@ -7,11 +7,17 @@ const DataTable = ({
     columns,
     loading,
     sx,
+    id,
+    rowModesModel,
+    onRowEditStop,
+    processRowUpdate,
+    onRowModesModelChange
+
 }) => {
     const [pageSize, setPageSize] = useState(2);
 
     return (
-        <DataGrid getRowId={() => crypto.randomUUID()}
+        <DataGrid getRowId={(row) => row[id]}
             rows={rows}
             columns={columns}
             loading={loading}
@@ -29,7 +35,12 @@ const DataTable = ({
                     showQuickFilter: true,
                 },
             }}
+            rowModesModel={rowModesModel}
+            onRowEditStop={onRowEditStop}
+            processRowUpdate={processRowUpdate}
+            onRowModesModelChange={onRowModesModelChange}
         />
+        
     );
 };
 
