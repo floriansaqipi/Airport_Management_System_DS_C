@@ -1,0 +1,13 @@
+.active {
+  padding: 5px;
+  background-color: #dddddd;
+  color: hsl(225, 50%, 48%);
+  border-radius: 5px;
+}
+
+.navsmth {
+  display: "block";
+  padding: 10px;
+  color: hsl(240, 1%, 48%);
+  border-radius: 5px;
+}
