@@ -1,74 +1,257 @@
-import { useState } from 'react'
-import { SiConsul } from 'react-icons/si'
-import { AiOutlineGlobal } from 'react-icons/ai'
-import { BsPhoneVibrate } from 'react-icons/bs'
-import { CgMenuGridO } from 'react-icons/cg'
-import logo from '../../assets/logo.png'
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import Container from "@mui/material/Container";
+import Button from "@mui/material/Button";
+import MenuItem from "@mui/material/MenuItem";
+import AdbIcon from "@mui/icons-material/Adb";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { StyledEngineProvider } from "@mui/material/styles";
+import logo from "../../assets/logo.png";
+import { NavLink } from "react-router-dom";
+import classes from "./Navbar.modules.css";
+
+
+// Custom theme with provided colors and fonts
+const customTheme = createTheme({
+  palette: {
+    primary: {
+      main: "hsl(180, 15%, 95%)",
+    },
+    secondary: {
+      main: "#f0f4f4",
+    },
+    text: {
+      primary: "#212121", // Slightly darker gray for primary text
+      secondary: "#424242", // Slightly lighter gray for secondary text
+    },
+    background: {
+      default: "hsl(0, 0%, 96%)", // Very light gray background
+    },
+  },
+  typography: {
+    fontFamily: '"Spartan", "Montserrat", sans-serif',
+    h6: {
+      fontFamily: '"Montserrat", sans-serif',
+      fontWeight: 700,
+    },
+    h5: {
+      fontFamily: '"Montserrat", sans-serif',
+      fontWeight: 700,
+    },
+    button: {
+      textTransform: "none", // Disable uppercase transformation
+    },
+  },
+});
+
+const pages = ["Products", "Pricing", "Blog"];
 
 const Navbar = () => {
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
 
-  // remove navBar on small screens
-  const [active, setActive] = useState('navBarMenu');
-  const showNavBar = () => {
-    setActive('navBarMenu showNavBar');
-  }
-  const removeNavBar = () => {
-    setActive('navBarMenu');
-  }
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
 
-  // add bgcolor on second nabVar
-  const [noBg, addBg] = useState('navBarTwo');
-  const addBgColor = () => {
-    if (window.scrollY >= 10) {
-      addBg('navBarTwo navbar_With_Bg');
-    } else {
-      addBg('navBarTwo')
-    }
-  }
-  window.addEventListener('scroll', addBgColor)
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
-    <div className='navBar flex'>
-      <div className="navBarOne flex">
-        <div>
-          <SiConsul className='icon' />
-        </div>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={customTheme}>
+        <CssBaseline />
+        <AppBar position="static">
+          <Container maxWidth="xl">
+            <Toolbar disableGutters>
+              <img
+                src={logo}
+                alt="Logo"
+                style={{
+                  display: "block",
+                  marginRight: "1rem",
+                  height: "84px",
+                  width: "84px",
+                }}
+              />
 
-        <div className="none flex">
-          <li className='flex'><BsPhoneVibrate className='icon' />Support</li>
-          <li className='flex'><AiOutlineGlobal className='icon' />Languages</li>
-        </div>
+              <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleOpenNavMenu}
+                  color="inherit"
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorElNav}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                  }}
+                  open={Boolean(anchorElNav)}
+                  onClose={handleCloseNavMenu}
+                  sx={{
+                    display: { xs: "block", md: "none" },
+                  }}
+                >
+                  {pages.map((page) => (
+                    <MenuItem key={page} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">{page}</Typography>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </Box>
+              <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+              <Typography
+                variant="h5"
+                noWrap
+                component="a"
+                href="#app-bar-with-responsive-menu"
+                sx={{
+                  mr: 2,
+                  display: { xs: "flex", md: "none" },
+                  flexGrow: 1,
+                  color: "inherit",
+                  textDecoration: "none",
+                }}
+              >
+                LOGO
+              </Typography>
+              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
+                >
+                  <NavLink
+                    to="/"
+                    style={{
+                      display: "block",
+                      padding: "10px",
+                      color: "hsl(240, 1%, 48%)",
+                      borderRadius: "5px",
+                    }}
+                    end
+                  >
+                    Home
+                  </NavLink>
+                </Button>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
+                >
+                  <NavLink
+                    to="/flights"
+                    style={{
+                      display: "block",
+                      padding: "10px",
+                      color: "hsl(240, 1%, 48%)",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Flights
+                  </NavLink>
+                </Button>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
+                >
+                  <NavLink
+                    to="/tickets"
+                    style={{
+                      display: "block",
+                      padding: "10px",
+                      color: "hsl(240, 1%, 48%)",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Tickets
+                  </NavLink>
+                </Button>
+              </Box>
 
-        <div className="atb flex">
-          <span>Sign In</span>
-          <span>Sign Out</span>
-        </div>
+              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex", justifyContent: "right" } }}>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
+                >
+                  <NavLink
+                    to="/login"
+                    style={{
+                      display: "block",
+                      padding: "10px",
+                      color: "hsl(240, 1%, 48%)",
+                      borderRadius: "5px",
+                    }}
+                    end
+                  >
+                    Log In
+                  </NavLink>
+                </Button>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
+                >
+                  <NavLink
+                    to="/signup"
+                    style={{
+                      display: "block",
+                      padding: "10px",
+                      color: "hsl(240, 1%, 48%)",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Sign Up
+                  </NavLink>
+                </Button>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
+                >
+                  <NavLink
+                    to="/logout"
+                    style={{
+                      display: "block",
+                      padding: "10px",
+                      color: "hsl(240, 1%, 48%)",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Logout
+                  </NavLink>
+                </Button>
+              </Box>
+            </Toolbar>
+          </Container>
+        </AppBar>
+      </ThemeProvider>
+    </StyledEngineProvider>
+  );
+};
 
-      </div>
-
-      <div className={noBg}>
-        <div className="logoDiv">
-          <img src={logo} className='logo' alt="logo" />
-        </div>
-        <div className={active}>
-          <ul className="menu flex">
-            <li onClick={removeNavBar} className="listItem">Home</li>
-            <li onClick={removeNavBar} className="listItem">About</li>
-            <li onClick={removeNavBar} className="listItem">Offers</li>
-            <li onClick={removeNavBar} className="listItem">Seats</li>
-            <li onClick={removeNavBar} className="listItem">Destinations</li>
-          </ul>
-          <button className='btn flex btnOne'>Contact</button>
-
-
-        </div>
-        <button className='btn flex btnTwo'>Contact</button>
-        <div onClick={showNavBar} className="toggleIcon">
-          <CgMenuGridO className='icon' />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export default Navbar
+export default Navbar;
