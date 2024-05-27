@@ -5,7 +5,7 @@ import { Container, Button, Dialog, DialogActions, DialogContent, DialogTitle, T
 import { GridActionsCellItem } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { apiService } from "../../util/apiService";
+import { apiService } from "../../apiService";
 
 const Flights = () => {
     const [rows, setRows] = useState([]);

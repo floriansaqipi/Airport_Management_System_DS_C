@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Typography, Box, Container, Modal, Paper } from '@mui/material';
-import DataTable from './DataTable';
+import DataTable from '../../util/DataTable';
 import EmployeeModal from './EmployeeModal';
-import { apiService } from '../apiService';
+import { apiService } from '../../apiService';
 
 const EmployeeList = () => {
     const [employees, setEmployees] = useState([]);

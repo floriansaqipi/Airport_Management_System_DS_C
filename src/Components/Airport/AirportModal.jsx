@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { Button, TextField, Box, Typography, FormHelperText } from '@mui/material';
 
-import { apiService } from '../../services/apiService';
+import { apiService } from '../../apiService';
 
 Modal.setAppElement('#root'); 
 
