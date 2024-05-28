@@ -14,9 +14,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { StyledEngineProvider } from "@mui/material/styles";
 import logo from "../../assets/logo.png";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link, Form, useRouteLoaderData } from "react-router-dom";
 import classes from "./Navbar.modules.css";
-
 
 // Custom theme with provided colors and fonts
 const customTheme = createTheme({
@@ -51,8 +50,6 @@ const customTheme = createTheme({
   },
 });
 
-const pages = ["Products", "Pricing", "Blog"];
-
 const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 
@@ -73,6 +70,8 @@ const Navbar = () => {
     setAnchorEl(null);
   };
 
+  const auth = useRouteLoaderData("root");
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={customTheme}>
@@ -80,16 +79,18 @@ const Navbar = () => {
         <AppBar position="static">
           <Container maxWidth="xl">
             <Toolbar disableGutters>
-              <img
-                src={logo}
-                alt="Logo"
-                style={{
-                  display: "block",
-                  marginRight: "1rem",
-                  height: "84px",
-                  width: "84px",
-                }}
-              />
+              <Link to="/">
+                <img
+                  src={logo}
+                  alt="Logo"
+                  style={{
+                    display: "block",
+                    marginRight: "1rem",
+                    height: "84px",
+                    width: "84px",
+                  }}
+                />
+              </Link>
 
               <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
                 <IconButton
@@ -120,29 +121,184 @@ const Navbar = () => {
                     display: { xs: "block", md: "none" },
                   }}
                 >
-                  {pages.map((page) => (
-                    <MenuItem key={page} onClick={handleCloseNavMenu}>
-                      <Typography textAlign="center">{page}</Typography>
-                    </MenuItem>
-                  ))}
+                  <MenuItem key="home" onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">
+                      <NavLink
+                        to="/"
+                        style={{
+                          display: "block",
+                          padding: "10px",
+                          color: "hsl(240, 1%, 48%)",
+                          borderRadius: "5px",
+                        }}
+                        end
+                      >
+                        Home
+                      </NavLink>
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem key="flights" onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">
+                      <NavLink
+                        to="/flights"
+                        style={{
+                          display: "block",
+                          padding: "10px",
+                          color: "hsl(240, 1%, 48%)",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        Flights
+                      </NavLink>
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem key="tickets" onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">
+                      <NavLink
+                        to="/tickets"
+                        style={{
+                          display: "block",
+                          padding: "10px",
+                          color: "hsl(240, 1%, 48%)",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        Tickets
+                      </NavLink>
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem key="airports" onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">
+                      <NavLink
+                        to="/airports"
+                        style={{
+                          display: "block",
+                          padding: "10px",
+                          color: "hsl(240, 1%, 48%)",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        Airports
+                      </NavLink>
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem key="baggage" onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">
+                      <NavLink
+                        to="/baggage"
+                        style={{
+                          display: "block",
+                          padding: "10px",
+                          color: "hsl(240, 1%, 48%)",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        Baggage
+                      </NavLink>
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem key="passengers" onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">
+                      <NavLink
+                        to="/passengers"
+                        style={{
+                          display: "block",
+                          padding: "10px",
+                          color: "hsl(240, 1%, 48%)",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        Passengers
+                      </NavLink>
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem key="employees" onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">
+                      <NavLink
+                        to="/employees"
+                        style={{
+                          display: "block",
+                          padding: "10px",
+                          color: "hsl(240, 1%, 48%)",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        Employees
+                      </NavLink>
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem key="users" onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">
+                      <NavLink
+                        to="/users"
+                        style={{
+                          display: "block",
+                          padding: "10px",
+                          color: "hsl(240, 1%, 48%)",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        Users
+                      </NavLink>
+                    </Typography>
+                  </MenuItem>
+                  {!auth && (
+                    <React.Fragment>
+                      <MenuItem key="login" onClick={handleCloseNavMenu}>
+                        <Typography textAlign="center">
+                          <NavLink
+                            to="/login"
+                            style={{
+                              display: "block",
+                              padding: "10px",
+                              color: "hsl(240, 1%, 48%)",
+                              borderRadius: "5px",
+                            }}
+                          >
+                            Login
+                          </NavLink>
+                        </Typography>
+                      </MenuItem>
+                      <MenuItem key="signup" onClick={handleCloseNavMenu}>
+                        <Typography textAlign="center">
+                          <NavLink
+                            to="/signup"
+                            style={{
+                              display: "block",
+                              padding: "10px",
+                              color: "hsl(240, 1%, 48%)",
+                              borderRadius: "5px",
+                            }}
+                          >
+                            Signup
+                          </NavLink>
+                        </Typography>
+                      </MenuItem>
+                    </React.Fragment>
+                  )}
+                  {auth && (
+                    <Form action="/logout" method="post">
+                      <Button
+                        onClick={handleCloseNavMenu}
+                        type="submit"
+                        sx={{
+                          color: "hsl(240, 1%, 48%)",
+                          display: "block",
+                        }}
+                        style={{
+                          padding: "10px 26px",
+                          borderRadius: "5px",
+                          width: "100%",
+                          height: "100%",
+                          textAlign: "left",
+                        }}
+                      >
+                        Logout
+                      </Button>
+                    </Form>
+                  )}
                 </Menu>
               </Box>
-              <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
-              <Typography
-                variant="h5"
-                noWrap
-                component="a"
-                href="#app-bar-with-responsive-menu"
-                sx={{
-                  mr: 2,
-                  display: { xs: "flex", md: "none" },
-                  flexGrow: 1,
-                  color: "inherit",
-                  textDecoration: "none",
-                }}
-              >
-                LOGO
-              </Typography>
               <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
                 <Button
                   onClick={handleCloseNavMenu}
@@ -273,59 +429,66 @@ const Navbar = () => {
                     Users
                   </NavLink>
                 </Button>
-                
               </Box>
 
-              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex", justifyContent: "right" } }}>
-                <Button
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
-                >
-                  <NavLink
-                    to="/login"
-                    style={{
-                      display: "block",
-                      padding: "10px",
-                      color: "hsl(240, 1%, 48%)",
-                      borderRadius: "5px",
-                    }}
-                    end
-                  >
-                    Log In
-                  </NavLink>
-                </Button>
-                <Button
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
-                >
-                  <NavLink
-                    to="/signup"
-                    style={{
-                      display: "block",
-                      padding: "10px",
-                      color: "hsl(240, 1%, 48%)",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    Sign Up
-                  </NavLink>
-                </Button>
-                <Button
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
-                >
-                  <NavLink
-                    to="/logout"
-                    style={{
-                      display: "block",
-                      padding: "10px",
-                      color: "hsl(240, 1%, 48%)",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    Logout
-                  </NavLink>
-                </Button>
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  display: { xs: "none", md: "flex", justifyContent: "right" },
+                }}
+              >
+                {!auth && (
+                  <React.Fragment>
+                    <Button
+                      onClick={handleCloseNavMenu}
+                      sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
+                    >
+                      <NavLink
+                        to="/login"
+                        style={{
+                          display: "block",
+                          padding: "10px",
+                          color: "hsl(240, 1%, 48%)",
+                          borderRadius: "5px",
+                        }}
+                        end
+                      >
+                        Login
+                      </NavLink>
+                    </Button>
+                    <Button
+                      onClick={handleCloseNavMenu}
+                      sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
+                    >
+                      <NavLink
+                        to="/signup"
+                        style={{
+                          display: "block",
+                          padding: "10px",
+                          color: "hsl(240, 1%, 48%)",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        Signup
+                      </NavLink>
+                    </Button>
+                  </React.Fragment>
+                )}
+                {auth && (
+                  <Form action="/logout" method="post">
+                    <Button
+                      onClick={handleCloseNavMenu}
+                      type="submit"
+                      sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
+                      style={{
+                        padding: "16px 18px",
+                        borderRadius: "5px",
+                      }}
+                    >
+                      Logout
+                    </Button>
+                  </Form>
+                )}
               </Box>
             </Toolbar>
           </Container>
