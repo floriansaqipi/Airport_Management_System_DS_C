@@ -9,7 +9,7 @@ import PassengerList from "./Components/Passenger/PassengerList";
 import EmployeeList from "./Components/Employee/EmployeeList";
 import UserList from "./Components/Users/UserList";
 import Login from "./Components/Users/Login";
-import Signup from "./Components/Passenger/Signup";
+import Signup from "./Components/Users/Signup";
 import PassengerDetail from "./Components/Passenger/PassengerDetail";
 import EditPassengerFrom from "./Components/Passenger/EditPassengerForm";
 import AddPassengerForm from "./Components/Passenger/AddPassengerForm";
@@ -88,11 +88,12 @@ const router = createBrowserRouter([
       },
       { path: "employees", element: <EmployeeList /> },
       { path: "users", element: <UserList /> },
-      { path: "signup", element: <Signup /> },
+      //{ path: "signup", element: <Signup /> },
       { path: "logout", action: LogoutAction },
     ],
   },
   { path: "/login", element: <Login />},
+  { path: "/signup", element: <Signup /> }
 ]);
 
 function App() {

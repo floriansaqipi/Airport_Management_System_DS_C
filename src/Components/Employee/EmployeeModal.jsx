@@ -100,6 +100,8 @@ const EmployeeModal = ({ isOpen, onClose, onSave, employeeData, mode, existingUs
     },
   };
 
+
+
   return (
     <Modal isOpen={isOpen} onRequestClose={onClose} contentLabel="Employee Modal" style={customStyles}>
       <Box p={3}>
