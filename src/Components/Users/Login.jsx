@@ -47,7 +47,7 @@ function ColorSchemeToggle(props) {
   );
 }
 
-export default function LogIn() {
+export default function Login() {
   const [formInputsValidity, setFormInputsValidity] = useState({
     username: true,
     password: true,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, TextField, Container, Typography, Box, Paper, Grid, Autocomplete, FormControl, FormHelperText } from '@mui/material';
-import { apiService } from '../../apiService';
+import { apiService } from '../../util/apiService';
 
 const BaggageForm = ({ baggage, setBaggage, handleSubmit, title, submitButtonLabel }) => {
   const [passengers, setPassengers] = useState([]);

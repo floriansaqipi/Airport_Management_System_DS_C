@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { apiService } from '../../apiService';
+import { apiService } from '../../util/apiService';
 import AirlineForm from './AirlineForm';
 
 const EditAirlineForm = () => {
