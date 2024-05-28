@@ -81,50 +81,10 @@ const router = createBrowserRouter([
       },
       { path: "employees", element: <EmployeeList /> },
       { path: "users", element: <UserList /> },
-      { path: "login", element: <LogIn /> },
-      // { path : 'signup', element: <Signup /> }, //TODO: implement this route element component
-      // { path : 'logout', element: <Flights /> },
-
-      // {
-      //   path: 'events',
-      //   element: <EventsRootLayout />,
-      //   children: [
-      //     {
-      //       index: true,
-      //       element: <EventsPage />,
-      //       loader: eventsLoader,
-      //     },
-      //     {
-      //       path: ':eventId',
-      //       id: 'event-detail',
-      //       loader: eventDetailLoader,
-      //       children: [
-      //         {
-      //           index: true,
-      //           element: <EventDetailPage />,
-      //           action: deleteEventAction,
-      //         },
-      //         {
-      //           path: 'edit',
-      //           element: <EditEventPage />,
-      //           action: manipulateEventAction,
-      //         },
-      //       ],
-      //     },
-      //     {
-      //       path: 'new',
-      //       element: <NewEventPage />,
-      //       action: manipulateEventAction,
-      //     },
-      //   ],
-      // },
-      // {
-      //   path: 'newsletter',
-      //   element: <NewsletterPage />,
-      //   action: newsletterAction,
-      // },
+      { path: "signup", element: <Signup/> },
     ],
   },
+  { path: "/login", element: <LogIn /> },
 ]);
 
 function App() {
