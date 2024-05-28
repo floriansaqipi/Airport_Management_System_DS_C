@@ -21,7 +21,7 @@ import BaggageList from "./Components/Baggage/BaggageList";
 import BaggageDetails from './Components/Baggage/BaggageDetail';
 import EditBaggageForm from './Components/Baggage/EditBaggageForm';
 import AddBaggageForm from './Components/Baggage/AddBaggageForm';
-
+import AdminDashboard from "./Components/AdminDashboard/AdminDashboard";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -85,6 +85,7 @@ const router = createBrowserRouter([
     ],
   },
   { path: "/login", element: <Login /> },
+  { path: "/admin", element: <AdminDashboard />}
 ]);
 
 function App() {
