@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiService } from '../../apiService';
+import { apiService } from '../../util/apiService';
 import BaggageForm from './BaggageForm';
 
 const AddBaggageForm = () => {

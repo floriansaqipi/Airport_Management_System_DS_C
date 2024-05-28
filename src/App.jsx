@@ -8,7 +8,7 @@ import AirportList from "./Components/Airport/AirportList";
 import PassengerList from "./Components/Passenger/PassengerList";
 import EmployeeList from "./Components/Employee/EmployeeList";
 import UserList from "./Components/Users/UserList";
-import LogIn from "./Components/Users/LogIn";
+import Login from "./Components/Users/Login"
 import Signup from "./Components/Passenger/Signup";
 import PassengerDetail from "./Components/Passenger/PassengerDetail";
 import EditPassengerFrom from "./Components/Passenger/EditPassengerForm";
@@ -84,7 +84,7 @@ const router = createBrowserRouter([
       { path: "signup", element: <Signup/> },
     ],
   },
-  { path: "/login", element: <LogIn /> },
+  { path: "/login", element: <Login /> },
 ]);
 
 function App() {

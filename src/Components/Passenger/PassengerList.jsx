@@ -4,7 +4,7 @@ import DataTable from '../../util/DataTable'; // Adjust the path based on your d
 import { Container, Box, Typography, Button, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { apiService } from '../../apiService';
+import { apiService } from '../../util/apiService';
 
 export default function PassengerList() {
   const [passengers, setPassengers] = useState([]);
