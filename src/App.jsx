@@ -8,24 +8,28 @@ import AirportList from "./Components/Airport/AirportList";
 import PassengerList from "./Components/Passenger/PassengerList";
 import EmployeeList from "./Components/Employee/EmployeeList";
 import UserList from "./Components/Users/UserList";
-import Login from "./Components/Users/Login"
+import Login from "./Components/Users/Login";
 import Signup from "./Components/Passenger/Signup";
 import PassengerDetail from "./Components/Passenger/PassengerDetail";
 import EditPassengerFrom from "./Components/Passenger/EditPassengerForm";
 import AddPassengerForm from "./Components/Passenger/AddPassengerForm";
-import AirlineList from './Components/Airline/AirlineList';
-import AirlineDetail from './Components/Airline/AirlineDetail';
-import EditAirlineForm from './Components/Airline/EditAirlineForm';
-import AddAirlineForm from './Components/Airline/AddAirlineForm';
+import AirlineList from "./Components/Airline/AirlineList";
+import AirlineDetail from "./Components/Airline/AirlineDetail";
+import EditAirlineForm from "./Components/Airline/EditAirlineForm";
+import AddAirlineForm from "./Components/Airline/AddAirlineForm";
 import BaggageList from "./Components/Baggage/BaggageList";
-import BaggageDetails from './Components/Baggage/BaggageDetail';
-import EditBaggageForm from './Components/Baggage/EditBaggageForm';
-import AddBaggageForm from './Components/Baggage/AddBaggageForm';
+import BaggageDetails from "./Components/Baggage/BaggageDetail";
+import EditBaggageForm from "./Components/Baggage/EditBaggageForm";
+import AddBaggageForm from "./Components/Baggage/AddBaggageForm";
+import { action as LogoutAction } from "./Components/Users/Logout";
+import { authLoader } from './util/auth'
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
+    id: 'root',
+    loader: authLoader,
     children: [
       { index: true, element: <ActualHome /> },
       { path: "flights", element: <Flights /> },
@@ -43,7 +47,8 @@ const router = createBrowserRouter([
             ],
           },
           {
-            path: "new", element : <AddBaggageForm />
+            path: "new",
+            element: <AddBaggageForm />,
           },
         ],
       },
@@ -59,7 +64,8 @@ const router = createBrowserRouter([
             ],
           },
           {
-            path: "new", element : <AddPassengerForm />
+            path: "new",
+            element: <AddPassengerForm />,
           },
         ],
       },
@@ -75,16 +81,18 @@ const router = createBrowserRouter([
             ],
           },
           {
-            path: "new", element : <AddAirlineForm />
+            path: "new",
+            element: <AddAirlineForm />,
           },
         ],
       },
       { path: "employees", element: <EmployeeList /> },
       { path: "users", element: <UserList /> },
-      { path: "signup", element: <Signup/> },
+      { path: "signup", element: <Signup /> },
+      { path: "logout", action: LogoutAction },
     ],
   },
-  { path: "/login", element: <Login /> },
+  { path: "/login", element: <Login />},
 ]);
 
 function App() {

@@ -17,7 +17,7 @@ import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import BadgeRoundedIcon from "@mui/icons-material/BadgeRounded";
 import logo from "../../assets/logo.png";
 import { icon } from "@fortawesome/fontawesome-svg-core";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const isEmpty = (value) => value.trim() === "";
 
@@ -57,6 +57,8 @@ export default function Login() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const navigate = useNavigate();
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
@@ -92,8 +94,30 @@ export default function Login() {
       }
 
       const data = await response.json();
-      localStorage.setItem("token", data.token);
+      
+      const responseUser = await fetch(`/api/private/users/username/${username}`, {
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${data.accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error fetching data');
+      }
+
+      const responseUserData = await responseUser.json();
+
+      localStorage.setItem("token", data.accessToken);
+      localStorage.setItem("username", responseUserData.username)
+      localStorage.setItem("role", responseUserData.role.roleName)
+
+      const expiration = new Date();
+      expiration.setHours(expiration.getHours() + 1);
+      localStorage.setItem('expiration', expiration.toISOString());
+      
       setSuccess("Login successful! Redirecting...");
+      navigate('/')
     } catch (error) {
       setError(error.message);
     }
