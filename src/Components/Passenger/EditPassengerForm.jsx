@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, TextField, Container, Typography, Box, Paper, Grid } from '@mui/material';
-import { apiService } from '../../apiService';
+import { apiService } from '../../util/apiService';
 
 const EditPassengerForm = () => {
   const [passenger, setPassenger] = useState({ name: '', passportNumber: '', nationality: '', contactDetails: '', username: '', password: '' });

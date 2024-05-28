@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Card, CardContent, Typography, Button, Box, Container, Paper, Grid } from '@mui/material';
-import { apiService } from '../../apiService';
+import { apiService } from '../../util/apiService';
 
 const PassengerDetail = () => {
   const [passenger, setPassenger] = useState(null);

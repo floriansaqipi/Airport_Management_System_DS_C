@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { TextField, Button, Box, Typography, Container, Paper, CircularProgress } from '@mui/material';
-import { apiService } from '../../apiService';
+import { apiService } from '../../util/apiService';
 
 const Signup = () => {
   const [credentials, setCredentials] = useState({
