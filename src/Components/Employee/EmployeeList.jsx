@@ -3,8 +3,11 @@ import { Button, Typography, Box, Container, Modal, Paper } from '@mui/material'
 import DataTable from '../../util/DataTable';
 import EmployeeModal from './EmployeeModal';
 import { apiService } from '../../util/apiService';
+import { useRouteLoaderData } from 'react-router-dom';
 
 const EmployeeList = () => {
+    const auth = useRouteLoaderData("root");
+
     const [employees, setEmployees] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [currentEmployee, setCurrentEmployee] = useState(null);
@@ -103,25 +106,27 @@ const EmployeeList = () => {
             headerName: 'Actions',
             width: 300,
             renderCell: (params) => (
-                <div>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleEditEmployee(params.row)}
-                        size="medium"
-                    >
-                        Edit
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => handleOpenDeleteModal(params.row.employeeId)}
-                        style={{ marginLeft: '10px' }}
-                        size="medium"
-                    >
-                        Delete
-                    </Button>
-                </div>
+                auth.role === 'ADMIN' && (
+                    <div>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleEditEmployee(params.row)}
+                            size="medium"
+                        >
+                            Edit
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => handleOpenDeleteModal(params.row.employeeId)}
+                            style={{ marginLeft: '10px' }}
+                            size="medium"
+                        >
+                            Delete
+                        </Button>
+                    </div>
+                )
             ),
         },
     ];
@@ -149,9 +154,11 @@ const EmployeeList = () => {
                 <Typography variant="h4" component="h1" gutterBottom>
                     Employee
                 </Typography>
-                <Button variant="contained" color="primary" onClick={handleAddEmployee}>
-                    Add Employee
-                </Button>
+                {auth.role === 'ADMIN' && (
+                    <Button variant="contained" color="primary" onClick={handleAddEmployee}>
+                        Add Employee
+                    </Button>
+                )}
             </Box>
             <Box sx={customStyles.dataTable}>
                 <DataTable
