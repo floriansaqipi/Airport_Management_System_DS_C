@@ -6,6 +6,7 @@ import { GridActionsCellItem } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { apiService } from "../../util/apiService";
+import { useRouteLoaderData } from "react-router-dom";
 
 const Flights = () => {
     const [rows, setRows] = useState([]);
@@ -14,6 +15,7 @@ const Flights = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [currentRow, setCurrentRow] = useState(null);
     const [errors, setErrors] = useState({});
+    const auth = useRouteLoaderData("root");
 
     useEffect(() => {
         async function fetchFlights() {
@@ -198,37 +200,44 @@ const Flights = () => {
             headerName: 'Model',
             width: 200,
             valueGetter: params => params.row.aircraft.model,
-        },
-        {
+        }
+    ];
+
+    if (auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE")) {
+        columns.push({
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
             width: 100,
             cellClassName: 'actions',
-            getActions: ({ id }) => [
-                <GridActionsCellItem
-                    icon={<EditIcon />}
-                    label="Edit"
-                    className="textPrimary"
-                    onClick={handleEditClick(id)}
-                    color="inherit"
-                />,
-                <GridActionsCellItem
-                    icon={<DeleteIcon />}
-                    label="Delete"
-                    onClick={handleDeleteClick(id)}
-                    color="inherit"
-                />,
-            ],
-        },
-    ];
+            getActions: ({ id }) => {
+                    return [
+                        <GridActionsCellItem
+                            icon={<EditIcon />}
+                            label="Edit"
+                            className="textPrimary"
+                            onClick={handleEditClick(id)}
+                            color="inherit"
+                        />,
+                        <GridActionsCellItem
+                            icon={<DeleteIcon />}
+                            label="Delete"
+                            onClick={handleDeleteClick(id)}
+                            color="inherit"
+                        />,
+                    ];
+            },
+        });
+    }
 
     return (
         <Container className="home" maxWidth="xl">
             <h1 style={{ paddingBottom: "8px" }}>Flights</h1>
-            <Button variant="contained" color="primary" onClick={handleAddClick}>
-                Add New Flight
-            </Button>
+            {auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE") &&  (
+                <Button variant="contained" color="primary" onClick={handleAddClick}>
+                    Add New Flight
+                </Button>
+            )}
             <DataTable
                 rows={rows}
                 columns={columns}
