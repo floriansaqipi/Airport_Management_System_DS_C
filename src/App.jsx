@@ -22,7 +22,7 @@ import BaggageDetails from "./Components/Baggage/BaggageDetail";
 import EditBaggageForm from "./Components/Baggage/EditBaggageForm";
 import AddBaggageForm from "./Components/Baggage/AddBaggageForm";
 import { action as LogoutAction } from "./Components/Users/Logout";
-import { authLoader } from './util/auth'
+import { authLoader, checkAuthAdminLoader, checkAuthEmployeeLoader, checkAuthLoader } from './util/auth'
 
 const router = createBrowserRouter([
   {
@@ -38,34 +38,36 @@ const router = createBrowserRouter([
       {
         path: "baggage",
         children: [
-          { index: true, element: <BaggageList /> },
+          { index: true, element: <BaggageList />, loader: checkAuthLoader },
           {
             path: ":baggageId",
             children: [
-              { index: true, element: <BaggageDetails /> },
-              { path: "edit", element: <EditBaggageForm /> },
+              { index: true, element: <BaggageDetails />, loader: checkAuthLoader},
+              { path: "edit", element: <EditBaggageForm />, loader: checkAuthLoader },
             ],
           },
           {
             path: "new",
             element: <AddBaggageForm />,
+            loader: checkAuthLoader
           },
         ],
       },
       {
         path: "passengers",
         children: [
-          { index: true, element: <PassengerList /> },
+          { index: true, element: <PassengerList />, loader: checkAuthEmployeeLoader },
           {
             path: ":passengerId",
             children: [
-              { index: true, element: <PassengerDetail /> },
-              { path: "edit", element: <EditPassengerFrom /> },
+              { index: true, element: <PassengerDetail />, loader: checkAuthEmployeeLoader },
+              { path: "edit", element: <EditPassengerFrom />, loader: checkAuthEmployeeLoader },
             ],
           },
           {
             path: "new",
             element: <AddPassengerForm />,
+             loader: checkAuthEmployeeLoader
           },
         ],
       },
@@ -77,17 +79,18 @@ const router = createBrowserRouter([
             path: ":airlineId",
             children: [
               { index: true, element: <AirlineDetail /> },
-              { path: "edit", element: <EditAirlineForm /> },
+              { path: "edit", element: <EditAirlineForm />, loader: checkAuthEmployeeLoader },
             ],
           },
           {
             path: "new",
             element: <AddAirlineForm />,
+            loader: checkAuthEmployeeLoader
           },
         ],
       },
-      { path: "employees", element: <EmployeeList /> },
-      { path: "users", element: <UserList /> },
+      { path: "employees", element: <EmployeeList />, loader: checkAuthAdminLoader },
+      { path: "users", element: <UserList />, loader: checkAuthAdminLoader },
       { path: "signup", element: <Signup /> },
       { path: "logout", action: LogoutAction },
     ],
