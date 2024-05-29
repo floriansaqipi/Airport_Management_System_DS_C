@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useRouteLoaderData } from 'react-router-dom';
 import { Button, TextField, Container, Typography, Box, Paper, Grid, Autocomplete, FormControl, FormHelperText } from '@mui/material';
 import { apiService } from '../../util/apiService';
 
@@ -7,6 +7,7 @@ const BaggageForm = ({ baggage, setBaggage, handleSubmit, title, submitButtonLab
   const [passengers, setPassengers] = useState([]);
   const [flights, setFlights] = useState([]);
   const [errors, setErrors] = useState({});
+  const auth = useRouteLoaderData('root');
 
   useEffect(() => {
     const fetchPassengers = async () => {
@@ -43,7 +44,7 @@ const BaggageForm = ({ baggage, setBaggage, handleSubmit, title, submitButtonLab
     const value = name ? newValue : e.target.value;
     const fieldName = name || e.target.name;
     let valid = true;
-    
+
     if (fieldName === 'weight' && value < 0) {
       valid = false;
       setErrors(prevErrors => ({
@@ -67,8 +68,8 @@ const BaggageForm = ({ baggage, setBaggage, handleSubmit, title, submitButtonLab
 
   const validate = () => {
     const newErrors = {};
-    if (!baggage.passengerId) newErrors.passengerId = 'Passenger ID is required';
-    if (!baggage.flightId) newErrors.flightId = 'Flight ID is required';
+    if (!baggage.passenger?.passengerId) newErrors.passengerId = 'Passenger ID is required';
+    if (!baggage.flight?.flightId) newErrors.flightId = 'Flight ID is required';
     if (!baggage.weight) {
       newErrors.weight = 'Weight is required';
     } else if (baggage.weight < 0) {
@@ -86,7 +87,7 @@ const BaggageForm = ({ baggage, setBaggage, handleSubmit, title, submitButtonLab
   };
 
   return (
-    <Container className='home' maxWidth="sm">
+    <Container maxWidth="sm">
       <Paper elevation={3} sx={{ padding: 3, marginTop: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           {title}
@@ -100,7 +101,7 @@ const BaggageForm = ({ baggage, setBaggage, handleSubmit, title, submitButtonLab
                   options={passengers}
                   getOptionLabel={(option) => `${option.passengerId} - ${option.name}`}
                   renderInput={(params) => <TextField {...params} label="Passenger" />}
-                  value={passengers.find(p => p.passengerId === baggage.passengerId) || null}
+                  value={passengers.find(p => p.passengerId === baggage.passenger?.passengerId) || null}
                   onChange={(e, newValue) => handleChange(e, newValue ? newValue.passengerId : '', 'passengerId')}
                 />
                 {!!errors.passengerId && <FormHelperText>{errors.passengerId}</FormHelperText>}
@@ -113,7 +114,7 @@ const BaggageForm = ({ baggage, setBaggage, handleSubmit, title, submitButtonLab
                   options={flights}
                   getOptionLabel={(option) => `${option.flightId} - ${option.flightNumber}`}
                   renderInput={(params) => <TextField {...params} label="Flight" />}
-                  value={flights.find(f => f.flightId === baggage.flightId) || null}
+                  value={flights.find(f => f.flightId === baggage.flight?.flightId) || null}
                   onChange={(e, newValue) => handleChange(e, newValue ? newValue.flightId : '', 'flightId')}
                 />
                 {!!errors.flightId && <FormHelperText>{errors.flightId}</FormHelperText>}
@@ -134,10 +135,12 @@ const BaggageForm = ({ baggage, setBaggage, handleSubmit, title, submitButtonLab
             </Grid>
           </Grid>
           <Box mt={3} display="flex" justifyContent="space-between">
-            <Button type="submit" variant="contained" color="primary" sx={{ zIndex: 1 }}>
-              {submitButtonLabel}
-            </Button>
-            <Link to="/baggages" style={{ textDecoration: 'none' }}>
+            {auth && (
+              <Button type="submit" variant="contained" color="primary" sx={{ zIndex: 1 }}>
+                {submitButtonLabel}
+              </Button>
+            )}
+            <Link to="../.." style={{ textDecoration: 'none' }}>
               <Button variant="contained" color="secondary" style={{ marginRight: '10px' }}>
                 Go Back
               </Button>

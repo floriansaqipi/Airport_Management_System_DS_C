@@ -6,14 +6,14 @@ import BaggageForm from './BaggageForm';
 const EditBaggageForm = () => {
   const [baggage, setBaggage] = useState({ passengerId: '', flightId: '', weight: '' });
   const [originalBaggage, setOriginalBaggage] = useState(null);
-  const { id } = useParams();
+  const { baggageId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (id) {
-      loadBaggage(id);
+    if (baggageId) {
+      loadBaggage(baggageId);
     }
-  }, [id]);
+  }, [baggageId]);
 
   const loadBaggage = async (id) => {
     try {
@@ -38,7 +38,7 @@ const EditBaggageForm = () => {
     try {
       await apiService.put(`/private/baggage`, baggage);
       alert("Baggage updated successfully!");
-      navigate('/baggages');
+      navigate('/baggage');
     } catch (error) {
       console.error('There was an error saving the baggage!', error);
       alert('There was an error saving the baggage! Check the console for more details.');

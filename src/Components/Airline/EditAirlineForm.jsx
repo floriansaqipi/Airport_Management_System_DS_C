@@ -6,14 +6,14 @@ import AirlineForm from './AirlineForm';
 const EditAirlineForm = () => {
   const [airline, setAirline] = useState({ name: '', code: '' });
   const [errors, setErrors] = useState({ name: '', code: '' });
-  const { id } = useParams();
+  const { airlineId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (id) {
-      loadAirline(id);
+    if (airlineId) {
+      loadAirline(airlineId);
     }
-  }, [id]);
+  }, [airlineId]);
 
   const loadAirline = async (id) => {
     try {
