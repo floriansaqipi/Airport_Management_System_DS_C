@@ -61,7 +61,7 @@ const BaggagePassengerDetail = () => {
                 <Box mt={2}>
                   <Grid container spacing={2} justifyContent="center">
                     <Grid item>
-                      <Link to=".." style={{ textDecoration: 'none' }}>
+                      <Link to="/baggage" style={{ textDecoration: 'none' }}>
                         <Button variant="contained" color="secondary">
                           Back
                         </Button>

@@ -41,7 +41,7 @@ export default function BaggageList() {
       width: 100,
       renderCell: (params) => (
         auth ? (
-          <Link to={`detail/${params.row.baggageId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Link to={`${params.row.baggageId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
             {params.row.baggageId}
           </Link>
         ) : (
@@ -59,7 +59,7 @@ export default function BaggageList() {
           ? `${passenger.passengerId} - ${passenger.name}`
           : 'N/A';
         return auth ? (
-          <Link to={`passenger/${passenger.passengerId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Link to={`../passengers/${passenger.passengerId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
             {passengerDisplay}
           </Link>
         ) : (
@@ -88,7 +88,7 @@ export default function BaggageList() {
         headerName: 'Edit',
         width: 100,
         renderCell: (params) => (
-          <Link to={`detail/${params.row.baggageId}/edit`} style={{ textDecoration: 'none' }}>
+          <Link to={`${params.row.baggageId}/edit`} style={{ textDecoration: 'none' }}>
             <IconButton color="primary">
               <EditIcon />
             </IconButton>
