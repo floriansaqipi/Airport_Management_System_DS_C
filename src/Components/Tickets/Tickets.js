@@ -1,94 +1,112 @@
-import { useState, Fragment } from "react";
-
+import { useState, useEffect, Fragment } from "react";
 import TicketGrid from "./TicketGrid";
-
-const DUMMY_TICKETS = [
-  {
-    ticketId: 1,
-    seatNumber: "23",
-    _class: "Economy",
-    price: 220.0,
-    passenger: null,
-    flight: {
-      flightId: 1,
-      flightNumber: "1234",
-      departureTime: "2024-05-01T00:06:43",
-      arrivalTime: "2024-05-01T00:06:43",
-    },
-    boardingPass: {
-      boardingPassId: 3,
-      gate: "24F",
-      boardingTime: "2024-01-01T12:52:11",
-    },
-  },
-  {
-    ticketId: 2,
-    seatNumber: "28",
-    _class: "Bussiness",
-    price: 250.0,
-    passenger: null,
-    flight: {
-      flightId: 1,
-      flightNumber: "1234",
-      departureTime: "2024-05-01T00:06:43",
-      arrivalTime: "2024-05-01T00:06:43",
-    },
-    boardingPass: {
-      boardingPassId: 5,
-      gate: "24F",
-      boardingTime: "2024-01-01T12:52:11",
-    },
-  },
-  {
-    ticketId: 4,
-    seatNumber: "28",
-    _class: "Economy",
-    price: 505.23,
-    passenger: null,
-    flight: {
-      flightId: 1,
-      flightNumber: "1234",
-      departureTime: "2024-05-01T00:06:43",
-      arrivalTime: "2024-05-01T00:06:43",
-    },
-    boardingPass: {
-      boardingPassId: 2,
-      gate: "3A",
-      boardingTime: "2024-01-01T12:52:11",
-    },
-  },
-  {
-    ticketId: 5,
-    seatNumber: "2",
-    _class: "First",
-    price: 505.23,
-    passenger: {
-      passengerId: 10,
-      name: "John Doe",
-      passportNumber: "A12345678",
-      nationality: "American",
-      contactDetails: "johndoe@example.com",
-    },
-    flight: {
-      flightId: 1,
-      flightNumber: "1234",
-      departureTime: "2024-05-01T00:06:43",
-      arrivalTime: "2024-05-01T00:06:43",
-    },
-    boardingPass: {
-      boardingPassId: 7,
-      gate: "24F",
-      boardingTime: "2024-01-01T12:52:11",
-    },
-  },
-];
+import EditTicket from "./EditTicket";
+import { apiService } from "../../services/apiService";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from "@mui/material";
 
 const Tickets = () => {
-  const [tickets, setTickets] = useState(DUMMY_TICKETS);
+  const [reload, setReload]=useState(false);
+  const [tickets, setTickets] = useState([]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [currentTicket, setCurrentTicket] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [ticketToDelete, setTicketToDelete] = useState(null);
+
+  useEffect(() => {
+    loadTickets();
+  }, [reload]);
+
+  const loadTickets = async () => {
+    try {
+      const data = await apiService.get('/private/tickets');
+      setTickets(data);
+    } catch (error) {
+      console.error('There was an error fetching the tickets!', error);
+      alert('There was an error fetching the tickets! Check the console for more details.');
+    }
+  };
+
+  const handleReload = ()=>{
+    setReload(!reload);
+  }
+
+  const handleAddTicket = () => {
+    setCurrentTicket(null);
+    setModalIsOpen(true);
+  };
+  const handleSave= async () => {
+    setModalIsOpen(false);
+  };
+
+  const handleEditTicket = (ticket) => {
+    setCurrentTicket(ticket);
+    setModalIsOpen(true);
+  };
+
+  const handleDeleteTicket = (id) => {
+    setTicketToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+  
+  const handleSaveTicket = async (ticket) => {
+    try {
+      if (ticket.ticketId) {
+        await apiService.put('/private/tickets', ticket);
+      } else {
+        await apiService.post('/private/tickets', ticket);
+      }
+      setModalIsOpen(false);
+      loadTickets();
+    } catch (error) {
+      console.error('There was an error saving the ticket!', error);
+      alert('There was an error saving the ticket! Check the console for more details.');
+    }
+  };
+ 
+  const confirmDeleteTicket = async () => {
+    try {
+      if (ticketToDelete) {
+        await apiService.delete(`/private/tickets/${ticketToDelete}`);
+        setDeleteDialogOpen(false);
+        setModalIsOpen(false);
+        setTicketToDelete(null);
+        loadTickets();
+      }
+    } catch (error) {
+      console.error('There was an error deleting the ticket!', error);
+      alert('There was an error deleting the ticket! Check the console for more details.');
+    }
+  };
 
   return (
     <Fragment>
-      <TicketGrid tickets={tickets} />
+      <TicketGrid 
+        tickets={tickets} 
+        onAdd={handleAddTicket}
+        onEdit={handleEditTicket}
+        
+      />
+      {modalIsOpen && (
+        <EditTicket
+          isOpen={modalIsOpen}
+          onClose={() => setModalIsOpen(false)}
+          onSave={handleSaveTicket}
+          ticketData={currentTicket}
+          onDelete={handleDeleteTicket} 
+          onReload={() => setReload(!reload)}
+          
+        />
+      )}
+      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+        <DialogTitle>Delete Ticket</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Are you sure you want to delete this ticket?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialogOpen(false)} color="primary">Cancel</Button>
+          <Button onClick={confirmDeleteTicket} color="secondary">Delete</Button>
+        </DialogActions>
+      </Dialog>
     </Fragment>
   );
 };

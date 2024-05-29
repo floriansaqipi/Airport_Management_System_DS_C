@@ -10,6 +10,8 @@ import Footer from './Components/Footer/Footer'
 
 import './main.scss'
 import Tickets from './Components/Tickets/Tickets'
+import PassengersList from './Components/Tickets/PassengersList'
+import AddTicketCard from './Components/Tickets/AddTicketCard'
 
 
 function App() {
@@ -23,7 +25,8 @@ function App() {
     <Lounge />
     <Travelers />
     <Subscriber /> */}
-    <Tickets />
+    {/* <PassengersList /> */}
+    <Tickets/>
     {/* <Footer /> */}
    </div>
   )
