@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useRouteLoaderData } from 'react-router-dom';
 import { Card, CardContent, Typography, Button, Box, Container, Paper, Grid } from '@mui/material';
 import { apiService } from '../../util/apiService';
 
 const AirlineDetail = () => {
   const [airline, setAirline] = useState(null);
-  const { id } = useParams();
+  const { airlineId } = useParams();
+  const auth = useRouteLoaderData('root');
 
   useEffect(() => {
-    loadAirline(id);
-  }, [id]);
+    loadAirline(airlineId);
+  }, [airlineId]);
 
   const loadAirline = async (id) => {
     try {
@@ -26,9 +27,8 @@ const AirlineDetail = () => {
   }
 
   return (
-    <Container 
-    className='home'
-    maxWidth="sm">
+    <Container
+      maxWidth="sm">
       <Paper style={{ padding: '16px', marginTop: '32px' }}>
         <Card>
           <CardContent>
@@ -47,14 +47,16 @@ const AirlineDetail = () => {
                 <Box mt={2}>
                   <Grid container spacing={2} justifyContent="center">
                     <Grid item>
-                      <Link to={`/edit-airline/${airline.airlineId}`} style={{ textDecoration: 'none' }}>
-                        <Button variant="contained" color="primary">
-                          Edit
-                        </Button>
-                      </Link>
+                      {auth && (
+                        <Link to={`edit`} style={{ textDecoration: 'none' }}>
+                          <Button variant="contained" color="primary">
+                            Edit
+                          </Button>
+                        </Link>
+                      )}
                     </Grid>
                     <Grid item>
-                      <Link to="/airlines" style={{ textDecoration: 'none' }}>
+                      <Link to=".." style={{ textDecoration: 'none' }}>
                         <Button variant="contained" color="secondary">
                           Back
                         </Button>
