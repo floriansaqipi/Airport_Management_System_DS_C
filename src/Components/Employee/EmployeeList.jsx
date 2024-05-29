@@ -6,7 +6,6 @@ import { apiService } from '../../util/apiService';
 import { useRouteLoaderData } from 'react-router-dom';
 
 const EmployeeList = () => {
-    const auth = useRouteLoaderData("root");
 
     const [employees, setEmployees] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -84,6 +83,8 @@ const EmployeeList = () => {
         employee.role.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    const auth = useRouteLoaderData("root");
+
     const columns = [
         { field: 'employeeId', headerName: 'Employee ID', width: 150 },
         {
@@ -106,7 +107,7 @@ const EmployeeList = () => {
             headerName: 'Actions',
             width: 300,
             renderCell: (params) => (
-                auth.role === 'ADMIN' && (
+                auth && (
                     <div>
                         <Button
                             variant="contained"
@@ -154,7 +155,7 @@ const EmployeeList = () => {
                 <Typography variant="h4" component="h1" gutterBottom>
                     Employee
                 </Typography>
-                {auth.role === 'ADMIN' && (
+                {auth && (
                     <Button variant="contained" color="primary" onClick={handleAddEmployee}>
                         Add Employee
                     </Button>

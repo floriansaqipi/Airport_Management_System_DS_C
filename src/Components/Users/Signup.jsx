@@ -14,8 +14,7 @@ import Stack from "@mui/joy/Stack";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import logo from "../../assets/logo.png";
-import { Link, Navigate, useNavigate } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
 
 const isEmpty = (value) => value.trim() === "";
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -55,7 +54,7 @@ export default function Signup() {
     name: true,
     passportNumber: true,
     nationality: true,
-    email: true,
+    contactDetails: true,
     username: true,
     password: true,
     confirmPassword: true,
@@ -64,7 +63,7 @@ export default function Signup() {
     name: "",
     passportNumber: "",
     nationality: "",
-    email: "",
+    contactDetails: "",
     username: "",
     password: "",
     confirmPassword: "",
@@ -89,7 +88,7 @@ export default function Signup() {
     const enteredNameIsValid = !isEmpty(formValues.name);
     const enteredPassportNumberIsValid = isValidPassportNumber(formValues.passportNumber);
     const enteredNationalityIsValid = !isEmpty(formValues.nationality);
-    const enteredEmailIsValid = isValidEmail(formValues.email);
+    const enteredContactDetailsIsValid = isValidEmail(formValues.contactDetails);
     const enteredUsernameIsValid = !isEmpty(formValues.username);
     const enteredPasswordIsValid = isValidPassword(formValues.password);
     const enteredConfirmPasswordIsValid = formValues.password === formValues.confirmPassword;
@@ -98,13 +97,13 @@ export default function Signup() {
       name: enteredNameIsValid,
       passportNumber: enteredPassportNumberIsValid,
       nationality: enteredNationalityIsValid,
-      email: enteredEmailIsValid,
+      contactDetails: enteredContactDetailsIsValid,
       username: enteredUsernameIsValid,
       password: enteredPasswordIsValid,
       confirmPassword: enteredConfirmPasswordIsValid,
     });
 
-    const formIsValid = enteredNameIsValid && enteredPassportNumberIsValid && enteredNationalityIsValid && enteredEmailIsValid && enteredUsernameIsValid && enteredPasswordIsValid && enteredConfirmPasswordIsValid;
+    const formIsValid = enteredNameIsValid && enteredPassportNumberIsValid && enteredNationalityIsValid && enteredContactDetailsIsValid && enteredUsernameIsValid && enteredPasswordIsValid && enteredConfirmPasswordIsValid;
 
     if (!formIsValid) {
       return;
@@ -292,11 +291,11 @@ export default function Signup() {
                   <FormLabel>Email</FormLabel>
                   <Input
                     type="email"
-                    name="email"
-                    value={formValues.email}
+                    name="contactDetails"
+                    value={formValues.contactDetails}
                     onChange={handleChange}
                   />
-                  {!formInputsValidity.email && (
+                  {!formInputsValidity.contactDetails && (
                     <Typography color="error">
                       Please enter a valid email address!
                     </Typography>
