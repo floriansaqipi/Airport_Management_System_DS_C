@@ -45,7 +45,7 @@ const AddPassengerForm = () => {
   };
 
   return (
-    <Container className='home' maxWidth="sm">
+    <Container maxWidth="sm">
       <Paper elevation={3} sx={{ padding: 3, marginTop: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Add Passenger
