@@ -42,3 +42,23 @@ export function checkAuthLoader(){
     }
     return null;
 }
+
+export function checkAuthEmployeeLoader(){
+  const auth = getAuth();
+
+  if(auth == null || auth.role === 'PASSENGER' ){
+      return redirect("/login")
+  }
+  return null;
+}
+
+export function checkAuthAdminLoader(){
+  const auth = getAuth();
+
+  if(auth == null || auth.role !== 'ADMIN' ){
+      return redirect("/login")
+  }
+  return null;
+}
+
+
