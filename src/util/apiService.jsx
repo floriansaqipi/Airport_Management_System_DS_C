@@ -18,7 +18,7 @@ const handleResponse = async (response) => {
 };
 
 const getHeaders = () => {
-    const token = localStorage.getItem('token');
+    const token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcxNzA1ODI1NywiZXhwIjoxNzE3MDYxODU3fQ.GDA8y_DNlzXdjVszJYhgn8thPZVAxC9dxzV7s-BSzhH6-a9CAAGAXtUTKoLhVrs-NAYU_OjLtfCA2Nt2XXuFXA";
     return {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,

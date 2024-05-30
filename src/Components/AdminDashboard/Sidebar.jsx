@@ -1,41 +1,41 @@
-import * as React from "react"
-import GlobalStyles from "@mui/joy/GlobalStyles"
-import Avatar from "@mui/joy/Avatar"
-import Box from "@mui/joy/Box"
-import Button from "@mui/joy/Button"
-import Card from "@mui/joy/Card"
-import Chip from "@mui/joy/Chip"
-import Divider from "@mui/joy/Divider"
-import IconButton from "@mui/joy/IconButton"
-import Input from "@mui/joy/Input"
-import LinearProgress from "@mui/joy/LinearProgress"
-import List from "@mui/joy/List"
-import ListItem from "@mui/joy/ListItem"
-import ListItemButton, { listItemButtonClasses } from "@mui/joy/ListItemButton"
-import ListItemContent from "@mui/joy/ListItemContent"
-import Typography from "@mui/joy/Typography"
-import Sheet from "@mui/joy/Sheet"
-import Stack from "@mui/joy/Stack"
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded"
-import HomeRoundedIcon from "@mui/icons-material/HomeRounded"
-import FlightIcon from "@mui/icons-material/Flight"
-import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded"
-import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded"
-import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded"
-import QuestionAnswerRoundedIcon from "@mui/icons-material/QuestionAnswerRounded"
-import GroupRoundedIcon from "@mui/icons-material/GroupRounded"
-import SupportRoundedIcon from "@mui/icons-material/SupportRounded"
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded"
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded"
-import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded"
-import BrightnessAutoRoundedIcon from "@mui/icons-material/BrightnessAutoRounded"
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
-
-import ColorSchemeToggle from "./ColorSchemeToggle"
-import { closeSidebar } from "./utils"
+import * as React from "react";
+import GlobalStyles from "@mui/joy/GlobalStyles";
+import Avatar from "@mui/joy/Avatar";
+import Box from "@mui/joy/Box";
+import Button from "@mui/joy/Button";
+import Card from "@mui/joy/Card";
+import Chip from "@mui/joy/Chip";
+import Divider from "@mui/joy/Divider";
+import IconButton from "@mui/joy/IconButton";
+import Input from "@mui/joy/Input";
+import LinearProgress from "@mui/joy/LinearProgress";
+import List from "@mui/joy/List";
+import ListItem from "@mui/joy/ListItem";
+import ListItemButton, { listItemButtonClasses } from "@mui/joy/ListItemButton";
+import ListItemContent from "@mui/joy/ListItemContent";
+import Typography from "@mui/joy/Typography";
+import Sheet from "@mui/joy/Sheet";
+import Stack from "@mui/joy/Stack";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import FlightIcon from "@mui/icons-material/Flight";
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
+import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
+import QuestionAnswerRoundedIcon from "@mui/icons-material/QuestionAnswerRounded";
+import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
+import SupportRoundedIcon from "@mui/icons-material/SupportRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import BrightnessAutoRoundedIcon from "@mui/icons-material/BrightnessAutoRounded";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { Link } from "react-router-dom";
+import ColorSchemeToggle from "./ColorSchemeToggle";
+import { closeSidebar } from "./utils";
 
 function Toggler({ defaultExpanded = false, renderToggle, children }) {
-  const [open, setOpen] = React.useState(defaultExpanded)
+  const [open, setOpen] = React.useState(defaultExpanded);
   return (
     <React.Fragment>
       {renderToggle({ open, setOpen })}
@@ -52,7 +52,7 @@ function Toggler({ defaultExpanded = false, renderToggle, children }) {
         {children}
       </Box>
     </React.Fragment>
-  )
+  );
 }
 
 export default function Sidebar() {
@@ -136,48 +136,71 @@ export default function Sidebar() {
         <List
           size="sm"
           sx={{
-            gap: 1,
-            "--List-nestedInsetStart": "30px",
-            "--ListItem-radius": theme => theme.vars.radius.sm
+            "--List-item-radius": "8px",
+            "--List-gap": "4px"
           }}
         >
           <ListItem>
-            <ListItemButton>
-              <HomeRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Home</Typography>
-              </ListItemContent>
-            </ListItemButton>
+            <Link to="/">
+              <ListItemButton>
+                <HomeRoundedIcon />
+                <ListItemContent>
+                  <Typography level="title-sm">Home</Typography>
+                </ListItemContent>
+              </ListItemButton>
+            </Link>
           </ListItem>
 
           <ListItem>
-            <ListItemButton>
-              <DashboardRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Dashboard</Typography>
-              </ListItemContent>
-            </ListItemButton>
+            <Link to="/admin">
+              <ListItemButton>
+                <DashboardRoundedIcon />
+                <ListItemContent>
+                  <Typography level="title-sm">Dashboard</Typography>
+                </ListItemContent>
+              </ListItemButton>
+            </Link>
+          </ListItem>
+
+          <ListItem nested>
+            <Toggler
+              renderToggle={({ open, setOpen }) => (
+                <ListItemButton onClick={() => setOpen(!open)}>
+                  <ShoppingCartRoundedIcon />
+                  <ListItemContent>
+                    <Typography level="title-sm">Orders</Typography>
+                  </ListItemContent>
+                  <KeyboardArrowDownIcon
+                    sx={{ transform: open ? "rotate(180deg)" : "none" }}
+                  />
+                </ListItemButton>
+              )}
+            >
+              <List sx={{ gap: 0.5 }}>
+                <ListItem sx={{ mt: 0.5 }}>
+                  <Link to="/admin/orders/table">
+                    <ListItemButton>Order Table</ListItemButton>
+                  </Link>
+                </ListItem>
+                <ListItem>
+                  <Link to="/admin/orders/list">
+                    <ListItemButton>Order List</ListItemButton>
+                  </Link>
+                </ListItem>
+              </List>
+            </Toggler>
           </ListItem>
 
           <ListItem>
-            <ListItemButton selected>
-              <ShoppingCartRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Orders</Typography>
-              </ListItemContent>
-            </ListItemButton>
+            <Link to="/admin/flights/table">
+              <ListItemButton>
+                <FlightIcon />
+                <ListItemContent>
+                  <Typography level="title-sm">Flights</Typography>
+                </ListItemContent>
+              </ListItemButton>
+            </Link>
           </ListItem>
-
-          <ListItem>
-            <ListItemButton selected>
-              <FlightIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Flights</Typography>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
-
-
 
           <ListItem nested>
             <Toggler
@@ -331,5 +354,5 @@ export default function Sidebar() {
         </IconButton>
       </Box>
     </Sheet>
-  )
+  );
 }

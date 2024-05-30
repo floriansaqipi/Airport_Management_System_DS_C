@@ -1,5 +1,4 @@
 import "./main.scss";
-
 import ActualHome from "./Components/ActualHome/ActualHome";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootLayout from "./Components/Root/Root";
@@ -8,10 +7,10 @@ import AirportList from "./Components/Airport/AirportList";
 import PassengerList from "./Components/Passenger/PassengerList";
 import EmployeeList from "./Components/Employee/EmployeeList";
 import UserList from "./Components/Users/UserList";
-import Login from "./Components/Users/Login"
+import Login from "./Components/Users/Login";
 import Signup from "./Components/Passenger/Signup";
 import PassengerDetail from "./Components/Passenger/PassengerDetail";
-import EditPassengerFrom from "./Components/Passenger/EditPassengerForm";
+import EditPassengerForm from "./Components/Passenger/EditPassengerForm";
 import AddPassengerForm from "./Components/Passenger/AddPassengerForm";
 import AirlineList from './Components/Airline/AirlineList';
 import AirlineDetail from './Components/Airline/AirlineDetail';
@@ -22,6 +21,10 @@ import BaggageDetails from './Components/Baggage/BaggageDetail';
 import EditBaggageForm from './Components/Baggage/EditBaggageForm';
 import AddBaggageForm from './Components/Baggage/AddBaggageForm';
 import AdminDashboard from "./Components/AdminDashboard/AdminDashboard";
+import OrderTable from './Components/AdminDashboard/OrderTable';
+import OrderList from './Components/AdminDashboard/OrderList';
+import FlightTable from './Components/AdminDashboard/FlightTable';
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -29,7 +32,6 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <ActualHome /> },
       { path: "flights", element: <Flights /> },
-      // { path : 'tickets', element: <Tickets /> },
       { path: "airports", element: <AirportList /> },
       {
         path: "baggage",
@@ -42,9 +44,7 @@ const router = createBrowserRouter([
               { path: "edit", element: <EditBaggageForm /> },
             ],
           },
-          {
-            path: "new", element : <AddBaggageForm />
-          },
+          { path: "new", element: <AddBaggageForm /> },
         ],
       },
       {
@@ -55,12 +55,10 @@ const router = createBrowserRouter([
             path: ":passengerId",
             children: [
               { index: true, element: <PassengerDetail /> },
-              { path: "edit", element: <EditPassengerFrom /> },
+              { path: "edit", element: <EditPassengerForm /> },
             ],
           },
-          {
-            path: "new", element : <AddPassengerForm />
-          },
+          { path: "new", element: <AddPassengerForm /> },
         ],
       },
       {
@@ -74,18 +72,25 @@ const router = createBrowserRouter([
               { path: "edit", element: <EditAirlineForm /> },
             ],
           },
-          {
-            path: "new", element : <AddAirlineForm />
-          },
+          { path: "new", element: <AddAirlineForm /> },
         ],
       },
       { path: "employees", element: <EmployeeList /> },
       { path: "users", element: <UserList /> },
-      { path: "signup", element: <Signup/> },
+      { path: "signup", element: <Signup /> },
     ],
   },
   { path: "/login", element: <Login /> },
-  { path: "/admin", element: <AdminDashboard />}
+  {
+    path: "/admin",
+    element: <AdminDashboard />,
+    children: [
+      { path: "orders/table", element: <OrderTable /> },
+      { path: "orders/list", element: <OrderList /> },
+      { path: "orders", element: <OrderTable /> },
+      { path: "flights/table", element: <FlightTable /> },
+    ],
+  },
 ]);
 
 function App() {

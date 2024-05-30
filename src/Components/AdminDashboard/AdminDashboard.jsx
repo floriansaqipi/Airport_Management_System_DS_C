@@ -6,6 +6,7 @@ import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
+import { Route, Routes } from 'react-router-dom';
 
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
@@ -15,6 +16,51 @@ import Sidebar from './Sidebar';
 import OrderTable from './OrderTable';
 import OrderList from './OrderList';
 import Header from './Header';
+import FlightTable from './FlightTable';
+
+function OrdersPage({ component: Component, title }) {
+  return (
+    <>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Breadcrumbs
+          size="sm"
+          aria-label="breadcrumbs"
+          separator={<ChevronRightRoundedIcon fontSize="sm" />}
+          sx={{ pl: 0 }}
+        >
+          <Link underline="none" color="neutral" href="/" aria-label="Home">
+            <HomeRoundedIcon />
+          </Link>
+          <Link underline="hover" color="neutral" href="/admin" fontSize={12} fontWeight={500}>
+            Admin
+          </Link>
+          <Typography color="primary" fontWeight={500} fontSize={12}>
+            Orders
+          </Typography>
+        </Breadcrumbs>
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          mb: 1,
+          gap: 1,
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: { xs: 'start', sm: 'center' },
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Typography level="h2" component="h1">
+          {title}
+        </Typography>
+        <Button color="primary" startDecorator={<DownloadRoundedIcon />} size="sm">
+          Download PDF
+        </Button>
+      </Box>
+      <Component />
+    </>
+  );
+}
 
 export default function AdminDashboard() {
   return (
@@ -42,59 +88,12 @@ export default function AdminDashboard() {
             gap: 1,
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Breadcrumbs
-              size="sm"
-              aria-label="breadcrumbs"
-              separator={<ChevronRightRoundedIcon fontSize="sm" />}
-              sx={{ pl: 0 }}
-            >
-              <Link
-                underline="none"
-                color="neutral"
-                href="#some-link"
-                aria-label="Home"
-              >
-                <HomeRoundedIcon />
-              </Link>
-              <Link
-                underline="hover"
-                color="neutral"
-                href="#some-link"
-                fontSize={12}
-                fontWeight={500}
-              >
-                Dashboard
-              </Link>
-              <Typography color="primary" fontWeight={500} fontSize={12}>
-                Orders
-              </Typography>
-            </Breadcrumbs>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              mb: 1,
-              gap: 1,
-              flexDirection: { xs: 'column', sm: 'row' },
-              alignItems: { xs: 'start', sm: 'center' },
-              flexWrap: 'wrap',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Typography level="h2" component="h1">
-              Orders
-            </Typography>
-            <Button
-              color="primary"
-              startDecorator={<DownloadRoundedIcon />}
-              size="sm"
-            >
-              Download PDF
-            </Button>
-          </Box>
-          <OrderTable />
-          <OrderList />
+          <Routes>
+            <Route path="orders/table" element={<OrdersPage component={OrderTable} title="Order Table" />} />
+            <Route path="orders/list" element={<OrdersPage component={OrderList} title="Order List" />} />
+            <Route path="orders" element={<OrdersPage component={OrderTable} title="Orders" />} />
+            <Route path="flights/table" element={<FlightTable />} />
+          </Routes>
         </Box>
       </Box>
     </CssVarsProvider>
