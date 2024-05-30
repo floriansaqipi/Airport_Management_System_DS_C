@@ -3,9 +3,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
-import Checkbox from '@mui/material/Checkbox';
 import { apiService } from '../../services/apiService';
 
 const ITEM_HEIGHT = 48;
@@ -19,9 +17,8 @@ const MenuProps = {
   },
 };
 
-export default function PassengersList({ style }) {
+export default function PassengersList({ selectedPassenger, onPassengerChange, style }) {
   const [passengers, setPassengers] = useState([]);
-  const [selectedPassengers, setSelectedPassengers] = useState([]);
 
   useEffect(() => {
     loadPassengers();
@@ -37,33 +34,24 @@ export default function PassengersList({ style }) {
     }
   };
 
-  const handleChange = (event) => {
-    const { value } = event.target;
-    setSelectedPassengers(typeof value === 'string' ? value.split(',') : value);
-  };
-
   return (
-    <div>
-      <FormControl sx={{ m: 1, width: 300 }} style={style}>
-        <InputLabel id="passengerId" name="passengerId" value={passengers.passengerId}>Passenger</InputLabel>
-        <Select
-          labelId="demo-multiple-checkbox-label"
-          id="demo-multiple-checkbox"
-          multiple
-          value={selectedPassengers}
-          onChange={handleChange}
-          input={<OutlinedInput label="Passenger" />}
-          renderValue={(selected) => selected.join(', ')}
-          MenuProps={MenuProps}
+    <FormControl fullWidth sx={{ mt: 2 }} style={style}>
+      <InputLabel id="passengerId-label">Passenger</InputLabel>
+      <Select
+        labelId="passengerId-label"
+        id="passengerId"
+        value={selectedPassenger}
+        onChange={(e) => onPassengerChange(e.target.value)}
+        input={<OutlinedInput label="Passenger" />}
+        MenuProps={MenuProps}
         >
           {passengers.map((passenger) => (
             <MenuItem key={passenger.passengerId} value={passenger.passengerId}>
-              <Checkbox checked={selectedPassengers.indexOf(passenger.name) > -1} />
-              <ListItemText primary={passenger.passengerId}  />
+              {passenger.passengerId} / {passenger.name}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
-    </div>
-  );
-}
+    );
+  }
+  

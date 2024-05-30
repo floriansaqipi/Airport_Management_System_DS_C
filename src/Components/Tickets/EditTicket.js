@@ -1,31 +1,74 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
-import { Button, TextField, Box, Typography } from '@mui/material';
-import { apiService } from '../../services/apiService';
-import PassengersList from './PassengersList'
-import FlightsList from './FlightsList'
-Modal.setAppElement('#root');
+import { Button, TextField, Box, Typography, FormHelperText  } from '@mui/material';
+import PassengersList from './PassengersList';
+import FlightsList from './FlightsList';
 
- 
-const EditTicket = ({ isOpen, onClose, onSave, ticketData,onReload, onDelete }) => {
+Modal.setAppElement('#root');
+const isEmpty = (value) => String(value).trim() === '';
+const isMoreThanSixChars = (value) => String(value).trim().length > 6;
+const isMoreThanSixteenChars = (value) => String(value).trim().length>16;
+const isPriceValid = (value) => {
+  const trimmedValue = String(value).trim(); 
+  
+  const decimalCount = (trimmedValue.match(/\./g) || []).length;
+  if (decimalCount !== 1) {
+    return false; 
+  }
+  return /^\d{1,6}(\.\d{1,2})?$/.test(trimmedValue);
+};
+
+
+const validateField = (field) => {
+  const valid = !isEmpty(field) && !isMoreThanSixteenChars(field);
+  const message = isEmpty(field) ? 'Field is required!' : 
+  isMoreThanSixteenChars(field) ? 'Field should not exceed 16 characters!' : '';
+  return { valid, message };
+};
+
+const validateSeatNumber = (field)  =>{
+  const valid = !isEmpty(field) && !isMoreThanSixChars(field);
+  const message = isEmpty(field) ? 'Field is required!' : 
+  isMoreThanSixChars(field) ? 'Field should not exceed 6 characters!' : '';
+  return { valid, message };
+}
+
+const validatePrice = (field) => {
+  const valid = !isEmpty(field) && isPriceValid(field);
+  const message = isEmpty(field) ? 'Field is required!' : 
+                  !isPriceValid(field) ? 'Entered value is not valid!' : '';
+  return { valid, message };
+};
+
+const EditTicket = ({ isOpen, onClose, onSave, ticketData, onReload, onDelete }) => {
   const [ticket, setTicket] = useState({
-    ticketId: ticketData?.ticketId || '',
-    flightId: ticketData?.flightId || '',
-    passengerId: ticketData?.passengerId || '',
-    seatNumber: ticketData?.seatNumber || '',
-    _class: ticketData?._class || '',
-    price: ticketData?.price || ''
+    ticketId: '',
+    flightId: '',
+    passengerId: '',
+    seatNumber: '',
+    _class: '',
+    price: ''
+  });
+
+  const [formInputsValidity, setFormInputsValidity] = useState({
+    flightId: { valid: true, message: '' },
+    passengerId: { valid: true, message: '' },
+    seatNumber: { valid: true, message: '' },
+    _class: { valid: true, message: '' },
+    price: { valid: true, message: '' }
   });
 
   useEffect(() => {
-    setTicket({
-      ticketId: ticketData?.ticketId || '',
-      flightId: ticketData?.flightId || '',
-      passengerId: ticketData?.passengerId || '',
-      seatNumber: ticketData?.seatNumber || '',
-      _class: ticketData?._class || '',
-      price: ticketData?.price || ''
-    });
+    if (ticketData) {
+      setTicket({
+        ticketId: ticketData.ticketId || '',
+        flightId: ticketData.flightId || '',
+        passengerId: ticketData.passengerId || '',
+        seatNumber: ticketData.seatNumber || '',
+        _class: ticketData._class || '',
+        price: ticketData.price || ''
+      });
+    }
   }, [ticketData]);
 
   const handleChange = (e) => {
@@ -36,16 +79,52 @@ const EditTicket = ({ isOpen, onClose, onSave, ticketData,onReload, onDelete }) 
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave(ticket);
+  const handleFlightChange = (flightId) => {
+    setTicket((prevTicket) => ({
+      ...prevTicket,
+      flightId
+    }));
   };
 
- 
+  const handlePassengerChange = (passengerId) => {
+    setTicket((prevTicket) => ({
+      ...prevTicket,
+      passengerId
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const flightIdValidation = validateField(ticket.flightId);
+    const passengerIdValidation = validateField(ticket.passengerId);
+    const seatNumberValidation = validateSeatNumber(ticket.seatNumber);
+    const classValidation = validateField(ticket._class);
+    const priceValidation = validatePrice(ticket.price);
+
+    setFormInputsValidity({
+      flightId: flightIdValidation,
+      passengerId: passengerIdValidation,
+      seatNumber: seatNumberValidation,
+      _class: classValidation,
+      price: priceValidation
+    });
+
+    const isFormValid = flightIdValidation.valid && 
+                        passengerIdValidation.valid && 
+                        seatNumberValidation.valid && 
+                        classValidation.valid &&
+                        priceValidation.valid;
+
+    if (isFormValid) {
+      onSave(ticket);
+    }
+  };
+
   const handleDeleteClick = (e) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     onDelete(ticket.ticketId);
   };
+
   const customStyles = {
     content: {
       top: '50%',
@@ -75,6 +154,7 @@ const EditTicket = ({ isOpen, onClose, onSave, ticketData,onReload, onDelete }) 
             fullWidth
             margin="normal"
           />
+           {formInputsValidity.seatNumber.message && <FormHelperText error>{formInputsValidity.seatNumber.message}</FormHelperText>}
           <TextField
             name="_class"
             label="Class"
@@ -83,6 +163,7 @@ const EditTicket = ({ isOpen, onClose, onSave, ticketData,onReload, onDelete }) 
             fullWidth
             margin="normal"
           />
+           {formInputsValidity._class.message && <FormHelperText error>{formInputsValidity._class.message}</FormHelperText>}
           <TextField
             name="price"
             label="Price"
@@ -91,37 +172,26 @@ const EditTicket = ({ isOpen, onClose, onSave, ticketData,onReload, onDelete }) 
             fullWidth
             margin="normal"
           />
-          <TextField
-            name="passengerId"
-            label="Passenger"
-            value={ticket.passengerId}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            name="flightId"
-            label="Flight"
-            value={ticket.flightId}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-          />
+           {formInputsValidity.price.message && <FormHelperText error>{formInputsValidity.price.message}</FormHelperText>}
+          <FlightsList selectedFlight={ticket.flightId} onFlightChange={handleFlightChange} />
+          {formInputsValidity.flightId.message && <FormHelperText error>{formInputsValidity.flightId.message}</FormHelperText>}
+          <PassengersList selectedPassenger={ticket.passengerId} onPassengerChange={handlePassengerChange} />
+          {formInputsValidity.passengerId.message && <FormHelperText error>{formInputsValidity.passengerId.message}</FormHelperText>}
           <Box mt={2}>
-            <Button type="submit" onClick={onReload} variant="contained" color="primary">
+            <Button type="submit" variant="contained" color="primary">
               {ticketData ? 'Update' : 'Add'} Ticket
             </Button>
             {ticketData ? (
-            <Button
-               variant="contained"
-               color="primary"
-               onClick={handleDeleteClick}
-               style={{ marginLeft: '10px' }}
-             >
-               Delete Ticket
-             </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleDeleteClick}
+                style={{ marginLeft: '10px' }}
+              >
+                Delete Ticket
+              </Button>
             ) : null}
-            <Button onClick={onClose} variant="contained" color="secondary" style={{ marginLeft: '10px' }}>
+            <Button onClick={onClose} variant="contained" color="secondary" style={{ marginLeft: '35px' }}>
               Cancel
             </Button>
           </Box>
