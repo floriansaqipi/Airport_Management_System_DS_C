@@ -14,7 +14,7 @@ const Tickets = () => {
 
   useEffect(() => {
     loadTickets();
-  }, [reload]);
+  }, []);
 
   const loadTickets = async () => {
     try {
@@ -47,16 +47,24 @@ const Tickets = () => {
     setTicketToDelete(id);
     setDeleteDialogOpen(true);
   };
+
+  const updateArrayStateHandler = (ticket) => {
+    const ticketIndex = tickets.findIndex(element => element.ticketId === ticket.ticketId);
+    const newArray = [ ...tickets.slice(0, ticketIndex), ticket, ...tickets.slice(ticketIndex + 1) ]
+    setTickets(newArray);
+  } 
   
   const handleSaveTicket = async (ticket) => {
     try {
       if (ticket.ticketId) {
-        await apiService.put('/private/tickets', ticket);
+        const dbTicket = await apiService.put('/private/tickets', ticket);
+        console.log(dbTicket)
+        updateArrayStateHandler(dbTicket);
       } else {
         await apiService.post('/private/tickets', ticket);
+        await loadTickets();
       }
       setModalIsOpen(false);
-      loadTickets();
     } catch (error) {
       console.error('There was an error saving the ticket!', error);
       alert('There was an error saving the ticket! Check the console for more details.');

@@ -18,7 +18,7 @@ const handleResponse = async (response) => {
 };
 
 const getHeaders = () => {
-    const token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjIiLCJpYXQiOjE3MTcwMjc0MDAsImV4cCI6MTcxNzAzMTAwMH0.4CFGxDT8oBsnfIPtpbkQmGrwrGEULWUi5o64gp0ENg3bUoVkcZI6e7kum094C6jHBxiO4dzfAdL1Fzgcz7NGjw";
+    const token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcxNzEzOTQ0NSwiZXhwIjoxNzE3MTQzMDQ1fQ.TSGAPz8-0lYncX95mkh7nyoyUrGMtipt8duZhJoTylLzhXdHZYosZAbaRVgXAOdM3OQejcmpryQuE2tVtbziyw";
     return {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -46,7 +46,7 @@ export const apiService = {
             headers: getHeaders(),
             body: JSON.stringify(data),
         });
-        console.log(JSON.stringify(data));
+      
         return handleResponse(response);
 
     },

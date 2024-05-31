@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from "./TicketCard.module.css"; 
 import FlightIcon from "@mui/icons-material/Flight";
 import logo from "../../assets/logo.png";
@@ -15,6 +15,10 @@ const TicketCard = ({ ticket, onEdit }) => {
   const handleCardClick = () => {
     onEdit(ticket);
   };
+
+  useEffect(()=>{
+    setCurrentTicket(ticket)
+  },[ticket])
 
   return (
     <main className={styles["ticket-system"]} onClick={handleCardClick}>
