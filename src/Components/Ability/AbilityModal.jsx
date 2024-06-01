@@ -9,14 +9,11 @@ Modal.setAppElement('#root');
 
 const isEmpty = (value) => value.trim() === '';
 const isMoreThanFiftyChars = (value) => value.trim().length > 100;
-const specialCharPattern = /[^a-zA-Z0-9 ]/;
-const containsSpecialCharacters = (value) => specialCharPattern.test(value);
 
 const validateField = (field) => {
-  const valid = !isEmpty(field) && !isMoreThanFiftyChars(field) && !containsSpecialCharacters(field);
+  const valid = !isEmpty(field) && !isMoreThanFiftyChars(field);
   const message = isEmpty(field) ? 'Field is required' : 
-  isMoreThanFiftyChars(field) ? 'Field should not exceed 50 characters' : 
-  containsSpecialCharacters(field)?'Field should not contain special characters':'';
+  isMoreThanFiftyChars(field) ? 'Field should not exceed 50 characters' : '';
   return { valid, message };
 };
 
