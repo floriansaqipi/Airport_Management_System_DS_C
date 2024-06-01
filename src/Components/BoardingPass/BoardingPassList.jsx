@@ -40,7 +40,7 @@ export default function BoardingPassList() {
             headerName: 'ID',
             width: 100,
             renderCell: (params) => (
-                auth ? (
+                (auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE")) ? (
                     <Link to={`${params.row.boardingPassId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                         {params.row.boardingPassId}
                     </Link>
@@ -89,7 +89,7 @@ export default function BoardingPassList() {
         }
     ];
 
-    if (auth) {
+    if (auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE")) {
         columns.push(
             {
                 field: 'edit',
@@ -125,7 +125,7 @@ export default function BoardingPassList() {
                 <Typography variant="h4" component="h1" gutterBottom>
                     Boarding Passes
                 </Typography>
-                {auth && (
+                {auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE") && (
                     <Link to="new" style={{ textDecoration: 'none' }}>
                         <Button variant="contained" color="primary" style={{ marginRight: '10px' }}>
                             Add Boarding Pass

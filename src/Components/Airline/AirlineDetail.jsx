@@ -50,7 +50,7 @@ const AirlineDetail = () => {
                 <Box mt={2}>
                   <Grid container spacing={2} justifyContent="center">
                     <Grid item>
-                      {auth && (
+                      {auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE") && (
                         <Link
                           to={`edit`}
                           style={{ textDecoration: 'none' }}

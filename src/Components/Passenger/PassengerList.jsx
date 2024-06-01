@@ -57,7 +57,7 @@ export default function PassengerList() {
     { field: 'contactDetails', headerName: 'Contact Details', width: 250 },
   ];
 
-  if (auth) {
+  if (auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE")) {
     columns.push(
       {
         field: 'edit',
@@ -94,7 +94,7 @@ export default function PassengerList() {
         <Typography variant="h4" component="h1" gutterBottom>
           Passenger List
         </Typography>
-        {auth && (
+        {auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE") && (
           <NavLink
             to={`new`}
             style={{ textDecoration: 'none' }}
