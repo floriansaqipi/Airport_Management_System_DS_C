@@ -4,7 +4,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { apiService } from '../../services/apiService';
+import { apiService } from '../../util/apiService';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;

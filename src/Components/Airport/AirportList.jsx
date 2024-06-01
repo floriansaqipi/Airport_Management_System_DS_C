@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useRouteLoaderData } from 'react-router-dom';
 import { Button, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import AirportModal from './AirportModal';
@@ -15,7 +15,7 @@ const AirportList = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [airportToDelete, setAirportToDelete] = useState(null);
   const itemsPerPage = 5;
-
+  const auth =useRouteLoaderData("root");
 
   const loadAirport = async () => {
     try {
@@ -32,16 +32,25 @@ const AirportList = () => {
   }, []);
 
   const handleAddAirport = () => {
+    if(auth && auth.role!="PASSENGER"){
+      return;
+    }
     setCurrentAirport(null);
     setModalIsOpen(true);
   };
 
   const handleEditAirport = (airport) => {
-    setCurrentAirport(airport);
-    setModalIsOpen(true);
+    if(auth && (auth.role =="ADMIN"||auth.role=="EMPLOYEE")){
+      setCurrentAirport(airport);
+      setModalIsOpen(true);
+    }
+    return;
   };
 
   const handleDeleteAirport = (id) => {
+    if(auth && auth.role!="PASSENGER"){
+      return;
+    }
     setAirportToDelete(id);
     setDeleteDialogOpen(true);
   };
@@ -81,9 +90,9 @@ const AirportList = () => {
     <div>
       <h1>Airports List</h1>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-        <Button variant="contained" color="primary" onClick={handleAddAirport}>
+        {auth && (auth.role =="ADMIN"||auth.role=="EMPLOYEE")&&(<Button variant="contained" color="primary" onClick={handleAddAirport}>
           Add Airport
-        </Button>
+        </Button>)}
         <TextField
           label="Search"
           variant="outlined"
@@ -115,14 +124,14 @@ const AirportList = () => {
               <TableCell>{airport.code}</TableCell>
               <TableCell>{airport.locationCity}</TableCell>
               <TableCell>{airport.locationCountry}</TableCell>
-              <TableCell>
+              {auth && (auth.role =="ADMIN"||auth.role=="EMPLOYEE") && (<TableCell>
                 <Button variant="contained" color="primary" onClick={() => handleEditAirport(airport)}>
                   Edit
                 </Button>
                 <Button variant="contained" color="secondary" onClick={() => handleDeleteAirport(airport.airportId)} style={{ marginLeft: '10px' }}>
                   Delete
                 </Button>
-              </TableCell>
+              </TableCell>)}
             </TableRow>
           ))}
         </TableBody>
