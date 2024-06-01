@@ -19,8 +19,29 @@ const MenuProps = {
 export default function EntityList({ selectedEntity, onEntityChange, style }) {
   // Directly use the created array
   const loadEntity = [
+    "aircrafts",
+    "airlines",
+    "airports",
+    "airport_services",
+    "baggages",
+    "boarding_passes",
+    "cargo",
+    "check_ins",
     "employees",
-    "flights"
+    "feedbacks",
+    "flight_crews",
+    "flights",
+    "flight_schedules",
+    "gate_assignments",
+    "maintenances",
+    "parkings",
+    "passengers",
+    "rental_services",
+    "role_abilities",
+    "roles",
+    "security_checkpoints",
+    "tickets",
+    "users"
   ];
 
   return (
