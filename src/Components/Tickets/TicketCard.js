@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styles from "./TicketCard.module.css"; 
+import styles from "./TicketCard.module.css";
 import FlightIcon from "@mui/icons-material/Flight";
 import logo from "../../assets/logo.png";
 import Grid from "@mui/material/Grid";
@@ -15,15 +15,15 @@ const TicketCard = ({ ticket, onEdit }) => {
   const arrivalTime = dateFormatter(currentTicket?.flight?.arrivalTime);
 
   const handleCardClick = () => {
-    if(auth&&auth.role=="PASSENGER"){
+    if (auth && auth.role == "PASSENGER") {
       return;
     }
     onEdit(ticket);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     setCurrentTicket(ticket)
-  },[ticket])
+  }, [ticket])
 
   return (
     <main className={styles["ticket-system"]} onClick={handleCardClick}>

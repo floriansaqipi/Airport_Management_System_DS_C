@@ -15,7 +15,7 @@ const TicketGrid = ({ tickets, onAdd, onEdit }) => {
   ));
   const auth = useRouteLoaderData("root");
   const lastIndex = tickets.length;
-  if (tickets.length >= 0 && auth&&auth.role!=="PASSENGER"){
+  if (tickets.length >= 0 && auth && auth.role !== "PASSENGER") {
     ticketsList[lastIndex] = (
       <>
         {ticketsList[lastIndex]}
@@ -27,7 +27,7 @@ const TicketGrid = ({ tickets, onAdd, onEdit }) => {
   }
 
   return (
-    <Container className="home" maxWidth="xl">
+    <Container maxWidth="xl">
       <Box sx={{ flexGrow: 1 }} my={4}>
         <Grid container spacing={{ xs: 2, md: 3, lg: 6 }}>
           {ticketsList}
