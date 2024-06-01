@@ -113,8 +113,8 @@ const Flights = () => {
         }
 
         const updatedRow = { ...currentRow };
-        const formattedDepartureTime = updatedRow.departureTime ? new Date(updatedRow.departureTime).toISOString().slice(0, 16) : '';
-        const formattedArrivalTime = updatedRow.arrivalTime ? new Date(updatedRow.arrivalTime).toISOString().slice(0, 16) : '';
+        const formattedDepartureTime = updatedRow.departureTime ? new Date(new Date(currentRow.departureTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : '';
+        const formattedArrivalTime = updatedRow.arrivalTime ? new Date(new Date(currentRow.arrivalTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : '';
 
         const flightDto = {
             flightNumber: updatedRow.flightNumber,
@@ -203,7 +203,7 @@ const Flights = () => {
         }
     ];
 
-    if (auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE")) {
+    if (auth && auth.role !== "PASSENGER") {
         columns.push({
             field: 'actions',
             type: 'actions',
@@ -211,21 +211,21 @@ const Flights = () => {
             width: 100,
             cellClassName: 'actions',
             getActions: ({ id }) => {
-                    return [
-                        <GridActionsCellItem
-                            icon={<EditIcon />}
-                            label="Edit"
-                            className="textPrimary"
-                            onClick={handleEditClick(id)}
-                            color="inherit"
-                        />,
-                        <GridActionsCellItem
-                            icon={<DeleteIcon />}
-                            label="Delete"
-                            onClick={handleDeleteClick(id)}
-                            color="inherit"
-                        />,
-                    ];
+                return [
+                    <GridActionsCellItem
+                        icon={<EditIcon />}
+                        label="Edit"
+                        className="textPrimary"
+                        onClick={handleEditClick(id)}
+                        color="inherit"
+                    />,
+                    <GridActionsCellItem
+                        icon={<DeleteIcon />}
+                        label="Delete"
+                        onClick={handleDeleteClick(id)}
+                        color="inherit"
+                    />,
+                ];
             },
         });
     }
@@ -233,7 +233,7 @@ const Flights = () => {
     return (
         <Container className="home" maxWidth="xl">
             <h1 style={{ paddingBottom: "8px" }}>Flights</h1>
-            {auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE") &&  (
+            {auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE") && (
                 <Button variant="contained" color="primary" onClick={handleAddClick}>
                     Add New Flight
                 </Button>
@@ -297,17 +297,18 @@ const Flights = () => {
                                 label="Departure Time"
                                 type="datetime-local"
                                 fullWidth
-                                value={currentRow.departureTime ? new Date(currentRow.departureTime).toISOString().slice(0, 16) : ''}
+                                value={currentRow.departureTime ? new Date(new Date(currentRow.departureTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
                                 onChange={handleInputChange('departureTime')}
                                 error={!!errors.departureTime || !!errors.time}
                                 helperText={errors.departureTime || errors.time}
                             />
+
                             <TextField
                                 margin="dense"
                                 label="Arrival Time"
                                 type="datetime-local"
                                 fullWidth
-                                value={currentRow.arrivalTime ? new Date(currentRow.arrivalTime).toISOString().slice(0, 16) : ''}
+                                value={currentRow.arrivalTime ? new Date(new Date(currentRow.arrivalTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16): ''}
                                 onChange={handleInputChange('arrivalTime')}
                                 error={!!errors.arrivalTime || !!errors.time}
                                 helperText={errors.arrivalTime || errors.time}
