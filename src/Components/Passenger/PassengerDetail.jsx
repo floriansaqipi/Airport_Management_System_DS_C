@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useRouteLoaderData } from 'react-router-dom';
+import { useParams, Link, useRouteLoaderData, useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, Typography, Button, Box, Container, Paper, Grid } from '@mui/material';
 import { apiService } from '../../util/apiService';
 
 const PassengerDetail = () => {
   const [passenger, setPassenger] = useState(null);
   const { passengerId } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from;
   const auth = useRouteLoaderData('root');
 
   useEffect(() => {
@@ -67,11 +70,13 @@ const PassengerDetail = () => {
                       )}
                     </Grid>
                     <Grid item>
-                      <Link to="/passengers" style={{ textDecoration: 'none' }}>
-                        <Button variant="contained" color="secondary">
-                          Back
-                        </Button>
-                      </Link>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => navigate(from)}
+                      >
+                        Back
+                      </Button>
                     </Grid>
                   </Grid>
                 </Box>

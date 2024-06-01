@@ -42,7 +42,11 @@ export default function AirlineList() {
       width: 300,
       renderCell: (params) => (
         auth ? (
-          <Link to={`${params.row.airlineId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Link
+            to={`${params.row.airlineId}`}
+            state={{ from: '/airlines' }}
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
             {params.row.name}
           </Link>) : (<span>{params.row.name}</span>)
       )
@@ -57,7 +61,10 @@ export default function AirlineList() {
         headerName: 'Edit',
         width: 100,
         renderCell: (params) => (
-          <Link to={`${params.row.airlineId}/edit`} style={{ textDecoration: 'none' }}>
+          <Link
+            to={`${params.row.airlineId}/edit`}
+            style={{ textDecoration: 'none' }}
+          >
             <IconButton color="primary">
               <EditIcon />
             </IconButton>
@@ -88,7 +95,9 @@ export default function AirlineList() {
           Airlines
         </Typography>
         {auth && (
-          <Link to={`new`} style={{ textDecoration: 'none' }}>
+          <Link
+            to={`new`}
+            style={{ textDecoration: 'none' }}>
             <Button variant="contained" color="primary" style={{ marginRight: '10px' }}>
               Add Airline
             </Button>

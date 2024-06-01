@@ -55,11 +55,15 @@ export default function BaggageList() {
       width: 290,
       renderCell: (params) => {
         const passenger = params.row.passenger;
-        const passengerDisplay = passenger 
+        const passengerDisplay = passenger
           ? `${passenger.passengerId} - ${passenger.name}`
           : 'N/A';
         return auth ? (
-          <Link to={`../passengers/${passenger.passengerId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Link
+            to={`../passengers/${passenger.passengerId}`}
+            state={{ from: '/baggage' }}
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
             {passengerDisplay}
           </Link>
         ) : (
@@ -73,7 +77,7 @@ export default function BaggageList() {
       width: 200,
       valueGetter: (params) => {
         const flight = params.row.flight;
-        return flight 
+        return flight
           ? `${flight.flightId} - ${flight.flightNumber}`
           : 'N/A';
       }

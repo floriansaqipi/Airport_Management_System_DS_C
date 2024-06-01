@@ -42,7 +42,11 @@ export default function PassengerList() {
       width: 200,
       renderCell: (params) => (
         auth ? (
-          <NavLink to={`${params.row.passengerId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+          <NavLink
+            to={`${params.row.passengerId}`}
+            state={{ from: '/passengers' }}
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
             {params.row.name}
           </NavLink>
         ) : (<span>{params.row.name}</span>)
@@ -91,7 +95,10 @@ export default function PassengerList() {
           Passenger List
         </Typography>
         {auth && (
-          <NavLink to={`new`} style={{ textDecoration: 'none' }}>
+          <NavLink
+            to={`new`}
+            style={{ textDecoration: 'none' }}
+          >
             <Button variant="contained" color="primary" style={{ marginRight: '10px' }}>
               Add Passenger
             </Button>
