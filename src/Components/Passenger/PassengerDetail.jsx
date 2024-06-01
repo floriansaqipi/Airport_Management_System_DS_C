@@ -8,7 +8,7 @@ const PassengerDetail = () => {
   const { passengerId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from;
+  const from = location.state?.from || "/passengers";
   const auth = useRouteLoaderData('root');
 
   useEffect(() => {

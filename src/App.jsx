@@ -22,8 +22,12 @@ import BaggageDetails from "./Components/Baggage/BaggageDetail";
 import EditBaggageForm from "./Components/Baggage/EditBaggageForm";
 import AddBaggageForm from "./Components/Baggage/AddBaggageForm";
 import Tickets from "./Components/Tickets/Tickets";
+import BoardingPassList from "./Components/BoardingPass/BoardingPassList";
+import BoardingPassDetail from "./Components/BoardingPass/BoardingPassDetail";
+import AddBoardingPassForm from "./Components/BoardingPass/AddBoardingPassForm";
+import EditBoardingPassForm from "./Components/BoardingPass/EditBoardingPassForm";
 import { action as LogoutAction } from "./Components/Users/Logout";
-import { authLoader, checkAuthAdminLoader, checkAuthEmployeeLoader, checkAuthLoader } from './util/auth'
+import { authLoader, checkAuthAdminLoader, checkAuthEmployeeLoader, checkAuthLoader } from './util/auth';
 
 const router = createBrowserRouter([
   {
@@ -90,9 +94,26 @@ const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path: "boarding_passes",
+        children: [
+          { index: true, element: <BoardingPassList />, loader: checkAuthLoader },
+          {
+            path: ":boardingPassId",
+            children: [
+              { index: true, element: <BoardingPassDetail />, loader: checkAuthLoader },
+              { path: "edit", element: <EditBoardingPassForm />, loader: checkAuthLoader },
+            ],
+          },
+          {
+            path: "new",
+            element: <AddBoardingPassForm />,
+            loader: checkAuthLoader
+          },
+        ],
+      },
       { path: "employees", element: <EmployeeList />, loader: checkAuthAdminLoader },
       { path: "users", element: <UserList />, loader: checkAuthAdminLoader },
-      //{ path: "signup", element: <Signup /> },
       { path: "logout", action: LogoutAction },
     ],
   },
