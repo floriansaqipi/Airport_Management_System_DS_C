@@ -3,8 +3,9 @@ import Modal from 'react-modal';
 import { Button, TextField, Box, Typography, FormHelperText } from '@mui/material';
 
 import { apiService } from '../../util/apiService';
-
-Modal.setAppElement('#root'); 
+import EntityList from './EntityList';
+import VerbList from './VerbList';
+Modal.setAppElement('#root');
 
 const isEmpty = (value) => value.trim() === '';
 const isMoreThanFiftyChars = (value) => value.trim().length > 100;
@@ -19,11 +20,10 @@ const validateField = (field) => {
   return { valid, message };
 };
 
-
 const AbilityModal = ({ isOpen, onClose, onSave, abilityData }) => {
   const [ability, setAbility] = useState({
     abilityId: abilityData?.abilityId || '',
-    entity: abilityData?.entitty || '',
+    entity: abilityData?.entity || '',
     verb: abilityData?.verb || '',
     field: abilityData?.field || '',
   });
@@ -65,14 +65,18 @@ const AbilityModal = ({ isOpen, onClose, onSave, abilityData }) => {
     });
 
     const isFormValid = entityValidation.valid && verbValidation.valid && fieldValidation.valid;
-    
 
     if (isFormValid) {
       try {
+        const abilityToSave = {
+            ...ability,
+            verb: ability.verb === 'ALL' ? null : ability.verb,
+          };
         if (ability.abilityId) {
-          await apiService.put('/private/abilities', ability);
+          await apiService.put('/private/abilities', abilityToSave);
         } else {
-          await apiService.post('/private/abilities', ability);
+          console.log(abilityToSave)
+          await apiService.post('/private/abilities', abilityToSave);
         }
         onSave(ability);
       } catch (error) {
@@ -81,7 +85,7 @@ const AbilityModal = ({ isOpen, onClose, onSave, abilityData }) => {
       }
     }
   };
-  
+
   const customStyles = {
     content: {
       top: '50%',
@@ -90,10 +94,24 @@ const AbilityModal = ({ isOpen, onClose, onSave, abilityData }) => {
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
-      width: '500px', 
-      maxHeight: '90vh', 
-      overflowY: 'auto' 
+      width: '500px',
+      maxHeight: '90vh',
+      overflowY: 'auto'
     },
+  };
+
+  const handleEntityChange = (entity) => {
+    setAbility((prevAbility) => ({
+      ...prevAbility,
+      entity
+    }));
+  };
+
+  const handleVerbChange = (verb) => {
+    setAbility((prevAbility) => ({
+      ...prevAbility,
+      verb
+    }));
   };
 
   return (
@@ -103,22 +121,16 @@ const AbilityModal = ({ isOpen, onClose, onSave, abilityData }) => {
           {abilityData ? 'Edit' : 'Add'} Ability
         </Typography>
         <form onSubmit={handleSubmit}>
-          <TextField
-            name="entity"
-            label="Entity"
-            value={ability.entity}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
+          <EntityList
+            selectedEntity={ability.entity}
+            onEntityChange={handleEntityChange}
+            style={{ marginTop: '20px' }}
           />
           {formInputsValidity.entity.message && <FormHelperText error>{formInputsValidity.entity.message}</FormHelperText>}
-          <TextField
-            name="verb"
-            label="Verb"
-            value={ability.verb}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
+          <VerbList
+            selectedVerb={ability.verb}
+            onVerbChange={handleVerbChange}
+            style={{ marginTop: '20px' }}
           />
           {formInputsValidity.verb.message && <FormHelperText error>{formInputsValidity.verb.message}</FormHelperText>}
           <TextField
