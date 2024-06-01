@@ -45,7 +45,7 @@ const FlightsModal = ({
                         >
                             {airports.map((airport) => (
                                 <MenuItem key={airport.airportId} value={airport.airportId}>
-                                    {airport.name}
+                                    {airport.airportId + " / " + airport.name}
                                 </MenuItem>
                             ))}
                         </TextField>
@@ -61,7 +61,7 @@ const FlightsModal = ({
                         >
                             {airports.map((airport) => (
                                 <MenuItem key={airport.airportId} value={airport.airportId}>
-                                    {airport.name}
+                                    {airport.airportId + " / " + airport.name}
                                 </MenuItem>
                             ))}
                         </TextField>
@@ -77,7 +77,7 @@ const FlightsModal = ({
                         >
                             {aircrafts.map((aircraft) => (
                                 <MenuItem key={aircraft.aircraftId} value={aircraft.aircraftId}>
-                                    {aircraft.tailNumber}
+                                    {aircraft.aircraftId + " / " + aircraft.tailNumber}
                                 </MenuItem>
                             ))}
                         </TextField>
@@ -85,6 +85,7 @@ const FlightsModal = ({
                             <InputLabel>Employees</InputLabel>
                             <Select
                                 multiple
+                                label="Employees"
                                 value={currentRow.employees.map(emp => emp.employeeId)}
                                 onChange={handleEmployeeChange}
                                 renderValue={(selected) => employees.filter(emp => selected.includes(emp.employeeId)).map(emp => emp.name).join(', ')}
@@ -92,7 +93,7 @@ const FlightsModal = ({
                                 {employees.map((employee) => (
                                     <MenuItem key={employee.employeeId} value={employee.employeeId}>
                                         <Checkbox checked={currentRow.employees.some(emp => emp.employeeId === employee.employeeId)} />
-                                        <ListItemText primary={employee.name} />
+                                        <ListItemText primary={employee.employeeId + " / " + employee.name} />
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -101,7 +102,7 @@ const FlightsModal = ({
                         <TextField
                             margin="dense"
                             label="Departure Time"
-                            InputLabelProps={{shrink: true}}
+                            InputLabelProps={{ shrink: true }}
                             type="datetime-local"
                             fullWidth
                             value={currentRow.departureTime ? new Date(new Date(currentRow.departureTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
@@ -112,7 +113,7 @@ const FlightsModal = ({
                         <TextField
                             margin="dense"
                             label="Arrival Time"
-                            InputLabelProps={{shrink: true}}
+                            InputLabelProps={{ shrink: true }}
                             type="datetime-local"
                             fullWidth
                             value={currentRow.arrivalTime ? new Date(new Date(currentRow.arrivalTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}

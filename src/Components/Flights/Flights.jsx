@@ -308,9 +308,9 @@ const Flights = () => {
     }
 
     return (
-        <Container className="home" maxWidth="xl">
-            <h1 style={{ paddingBottom: "8px" }}>Flights</h1>
-            {auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE") && (
+        <Container sx={{ mt: 3 }} maxWidth="xl">
+            <h1 style={{ paddingBottom: "8px", textAlign: "center" }}>Flights</h1>
+            {auth && auth.role !== "PASSENGER" && (
                 <Button variant="contained" color="primary" onClick={handleAddClick}>
                     Add New Flight
                 </Button>
