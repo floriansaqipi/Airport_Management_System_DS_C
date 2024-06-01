@@ -6,7 +6,6 @@ import { apiService } from '../../util/apiService';
 import { useRouteLoaderData } from 'react-router-dom';
 
 const EmployeeList = () => {
-
     const [employees, setEmployees] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [currentEmployee, setCurrentEmployee] = useState(null);
@@ -16,9 +15,11 @@ const EmployeeList = () => {
     const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
     const [employeeToDelete, setEmployeeToDelete] = useState(null);
     const apiUrl = '/private/employees';
+    const [existingUsernames, setExistingUsernames] = useState([]);
 
     useEffect(() => {
         loadEmployees();
+        loadExistingUsernames();
     }, []);
 
     const loadEmployees = async () => {
@@ -31,6 +32,16 @@ const EmployeeList = () => {
             console.error('There was an error fetching the employees!', error);
             alert('There was an error fetching the employees! Check the console for more details.');
             setLoading(false);
+        }
+    };
+
+    const loadExistingUsernames = async () => {
+        try {
+            const userData = await apiService.get('/private/auth/users');
+            const usernames = userData.map(user => user.username);
+            setExistingUsernames(usernames);
+        } catch (error) {
+            console.error('Error fetching existing usernames:', error);
         }
     };
 
@@ -107,7 +118,7 @@ const EmployeeList = () => {
             headerName: 'Actions',
             width: 300,
             renderCell: (params) => (
-                auth && (
+                auth && auth.role === "ADMIN" && (
                     <div>
                         <Button
                             variant="contained"
@@ -155,7 +166,7 @@ const EmployeeList = () => {
                 <Typography variant="h4" component="h1" gutterBottom>
                     Employee
                 </Typography>
-                {auth && (
+                {auth && auth.role === "ADMIN" && (
                     <Button variant="contained" color="primary" onClick={handleAddEmployee}>
                         Add Employee
                     </Button>
@@ -176,7 +187,7 @@ const EmployeeList = () => {
                 onSave={handleSaveEmployee}
                 employeeData={currentEmployee}
                 mode={modalMode}
-                existingUsernames={employees.map(employee => employee.username)}
+                existingUsernames={existingUsernames}
             />
             <Modal
                 open={deleteModalIsOpen}
