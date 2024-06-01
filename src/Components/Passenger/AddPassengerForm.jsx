@@ -129,7 +129,11 @@ const AddPassengerForm = () => {
             <Button type="submit" variant="contained" color="primary">
               Add Passenger
             </Button>
-            <Button onClick={() => navigate('/passengers')} variant="contained" color="secondary">
+            <Button
+              onClick={() => navigate('..')}
+              variant="contained"
+              color="secondary"
+            >
               Cancel
             </Button>
           </Box>
