@@ -15,11 +15,9 @@ const EmployeeList = () => {
     const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
     const [employeeToDelete, setEmployeeToDelete] = useState(null);
     const apiUrl = '/private/employees';
-    const [existingUsernames, setExistingUsernames] = useState([]);
 
     useEffect(() => {
         loadEmployees();
-        loadExistingUsernames();
     }, []);
 
     const loadEmployees = async () => {
@@ -32,16 +30,6 @@ const EmployeeList = () => {
             console.error('There was an error fetching the employees!', error);
             alert('There was an error fetching the employees! Check the console for more details.');
             setLoading(false);
-        }
-    };
-
-    const loadExistingUsernames = async () => {
-        try {
-            const userData = await apiService.get('/private/auth/users');
-            const usernames = userData.map(user => user.username);
-            setExistingUsernames(usernames);
-        } catch (error) {
-            console.error('Error fetching existing usernames:', error);
         }
     };
 
@@ -187,7 +175,6 @@ const EmployeeList = () => {
                 onSave={handleSaveEmployee}
                 employeeData={currentEmployee}
                 mode={modalMode}
-                existingUsernames={existingUsernames}
             />
             <Modal
                 open={deleteModalIsOpen}

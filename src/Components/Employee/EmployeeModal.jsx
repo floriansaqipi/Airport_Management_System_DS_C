@@ -16,28 +16,7 @@ const EmployeeModal = ({ isOpen, onClose, onSave, employeeData, mode }) => {
         password: '',
     });
     const [errors, setErrors] = useState({});
-    const [existingUsernames, setExistingUsernames] = useState([]);
-    const [fetchingUsernames, setFetchingUsernames] = useState(false);
-
-    useEffect(() => {
-        if (isOpen && fetchingUsernames) {
-            apiService.get('private/users')
-                .then(users => {
-                    const usernames = users.map(user => user.username);
-                    setExistingUsernames(usernames);
-                })
-                .catch(error => {
-                    console.error('Error fetching existing usernames:', error);
-                })
-                .finally(() => {
-                    setFetchingUsernames(false);
-                });
-        }
-    }, [isOpen, fetchingUsernames]);
-
-    useEffect(() => {
-        console.log('Existing Usernames:', existingUsernames);
-    }, [existingUsernames]);
+    const [existingUsernames] = useState([]);
 
     useEffect(() => {
         if (employeeData) {
@@ -120,10 +99,12 @@ const EmployeeModal = ({ isOpen, onClose, onSave, employeeData, mode }) => {
             }
             onSave(employee);
         } catch (error) {
-            console.error("Here is the error: " + error);
+            console.error("Here is the error: ", error);
+            const errorMessage = error.response?.data || 'Username is taken!';
+
             setErrors(prevErrors => ({
                 ...prevErrors,
-                username: 'Username is taken!'
+                username: errorMessage
             }));
         }
     };
