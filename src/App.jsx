@@ -26,6 +26,7 @@ import BoardingPassList from "./Components/BoardingPass/BoardingPassList";
 import BoardingPassDetail from "./Components/BoardingPass/BoardingPassDetail";
 import AddBoardingPassForm from "./Components/BoardingPass/AddBoardingPassForm";
 import EditBoardingPassForm from "./Components/BoardingPass/EditBoardingPassForm";
+import AbilityList from "./Components/Ability/AbilityList"
 import { action as LogoutAction } from "./Components/Users/Logout";
 import { authLoader, checkAuthAdminLoader, checkAuthEmployeeLoader, checkAuthLoader } from './util/auth';
 
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
       { path: "flights", element: <Flights /> },
       { path : 'tickets', element: <Tickets /> },
       { path: "airports", element: <AirportList /> },
+      { path: "abilities", element: <AbilityList /> },
       {
         path: "baggage",
         children: [

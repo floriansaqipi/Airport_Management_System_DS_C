@@ -5,6 +5,7 @@ const API_URL = '/api';
 const handleResponse = async (response) => {
     const contentType = response.headers.get('content-type');
     let data;
+
     
     if (contentType && contentType.indexOf('application/json') !== -1) {
         data = await response.json();
@@ -13,6 +14,7 @@ const handleResponse = async (response) => {
     }
 
     if (!response.ok) {
+        alert(data.message)
         throw new Error(data.message || data || 'Network response was not ok');
     }
     
