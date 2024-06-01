@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import AddTicketCard from "./AddTicketCard";
+import { useRouteLoaderData } from "react-router-dom";
 
 const TicketGrid = ({ tickets, onAdd, onEdit }) => {
   const ticketsList = tickets.map((ticket, index) => (
@@ -12,9 +13,9 @@ const TicketGrid = ({ tickets, onAdd, onEdit }) => {
       <TicketCard ticket={ticket} onEdit={onEdit} />
     </Grid>
   ));
-
+  const auth = useRouteLoaderData("root");
   const lastIndex = tickets.length;
-  if (tickets.length >= 0) {
+  if (tickets.length >= 0 && auth&&auth.role!=="PASSENGER"){
     ticketsList[lastIndex] = (
       <>
         {ticketsList[lastIndex]}

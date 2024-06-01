@@ -1,7 +1,7 @@
 import { useState, useEffect, Fragment } from "react";
 import TicketGrid from "./TicketGrid";
 import EditTicket from "./EditTicket";
-import { apiService } from "../../services/apiService";
+import { apiService } from "../../util/apiService";
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from "@mui/material";
 
 const Tickets = () => {

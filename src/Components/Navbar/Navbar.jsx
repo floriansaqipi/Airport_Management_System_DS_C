@@ -137,6 +137,22 @@ const Navbar = () => {
                       </NavLink>
                     </Typography>
                   </MenuItem>
+                  {auth && auth.role=="ADMIN"&&(
+                  <MenuItem key="users" onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">
+                      <NavLink
+                        to="/users"
+                        style={{
+                          display: "block",
+                          padding: "10px",
+                          color: "hsl(240, 1%, 48%)",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        Users
+                      </NavLink>
+                    </Typography>
+                  </MenuItem>)}
                   <MenuItem key="flights" onClick={handleCloseNavMenu}>
                     <Typography textAlign="center">
                       <NavLink
@@ -358,7 +374,7 @@ const Navbar = () => {
                     Flights
                   </NavLink>
                 </Button>
-                {auth && (
+                {auth &&(
                   <Button
                     onClick={handleCloseNavMenu}
                     sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}

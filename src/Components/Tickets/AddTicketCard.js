@@ -3,7 +3,7 @@ import styles from "./TicketCard.module.css";
 import FlightIcon from "@mui/icons-material/Flight";
 import logo from "../../assets/logo.png";
 import Grid from "@mui/material/Grid";
-import dateFormatter from "../../utils/dateFormatter";
+import dateFormatter from "../../util/dateFormatter";
 import QRCode from "react-qr-code";
 import EditTicket from './EditTicket'; 
 import AddTicketButton from './AddTicketButton';
