@@ -15,6 +15,7 @@ import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import logo from "../../assets/logo.png";
 import { Link, useNavigate } from 'react-router-dom';
+import { apiService } from "../../util/apiService";
 
 const isEmpty = (value) => value.trim() === "";
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -84,7 +85,7 @@ export default function Signup() {
     e.preventDefault();
     setError("");
     setSuccess("");
-
+  
     const enteredNameIsValid = !isEmpty(formValues.name);
     const enteredPassportNumberIsValid = isValidPassportNumber(formValues.passportNumber);
     const enteredNationalityIsValid = !isEmpty(formValues.nationality);
@@ -92,7 +93,7 @@ export default function Signup() {
     const enteredUsernameIsValid = !isEmpty(formValues.username);
     const enteredPasswordIsValid = isValidPassword(formValues.password);
     const enteredConfirmPasswordIsValid = formValues.password === formValues.confirmPassword;
-
+  
     setFormInputsValidity({
       name: enteredNameIsValid,
       passportNumber: enteredPassportNumberIsValid,
@@ -102,35 +103,26 @@ export default function Signup() {
       password: enteredPasswordIsValid,
       confirmPassword: enteredConfirmPasswordIsValid,
     });
-
+  
     const formIsValid = enteredNameIsValid && enteredPassportNumberIsValid && enteredNationalityIsValid && enteredContactDetailsIsValid && enteredUsernameIsValid && enteredPasswordIsValid && enteredConfirmPasswordIsValid;
-
+  
     if (!formIsValid) {
       return;
     }
-
+  
     try {
-      const response = await fetch("/api/public/auth/passengers/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formValues),
-      });
-
-      if (!response.ok) {
-        throw new Error("Signup failed!");
-      }
-
+      const response = await apiService.post('/public/auth/passengers/register', formValues);
+  
       setSuccess("Signup successful! Redirecting to login...");
       setTimeout(() => {
-        navigate("/login")
+        navigate("/login");
       }, 1500);
     } catch (error) {
-      setError(error.message);
+      setError(error.message || "Signup failed!");
     }
   };
-
+  
+  
   return (
     <CssVarsProvider defaultMode="dark" disableTransitionOnChange>
       <CssBaseline />
