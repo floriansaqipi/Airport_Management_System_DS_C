@@ -40,7 +40,7 @@ export default function BaggageList() {
       headerName: 'ID',
       width: 100,
       renderCell: (params) => (
-        auth ? (
+        (auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE")) ? (
           <Link to={`${params.row.baggageId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
             {params.row.baggageId}
           </Link>
@@ -56,9 +56,9 @@ export default function BaggageList() {
       renderCell: (params) => {
         const passenger = params.row.passenger;
         const passengerDisplay = passenger
-          ? `${passenger.passengerId} - ${passenger.name}`
+          ? `${passenger.passportNumber} - ${passenger.name}`
           : 'N/A';
-        return auth ? (
+        return (auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE")) ? (
           <Link
             to={`../passengers/${passenger.passengerId}`}
             state={{ from: '/baggage' }}
@@ -85,7 +85,7 @@ export default function BaggageList() {
     { field: 'weight', headerName: 'Weight', width: 150 }
   ];
 
-  if (auth) {
+  if (auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE")) {
     columns.push(
       {
         field: 'edit',
@@ -121,7 +121,7 @@ export default function BaggageList() {
         <Typography variant="h4" component="h1" gutterBottom>
           Baggages
         </Typography>
-        {auth && (
+        {auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE") && (
           <Link to="new" style={{ textDecoration: 'none' }}>
             <Button variant="contained" color="primary" style={{ marginRight: '10px' }}>
               Add Baggage

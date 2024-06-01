@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useRouteLoaderData } from 'react-router-dom';
 import { Card, CardContent, Typography, Button, Box, Container, Paper, Grid } from '@mui/material';
 import { apiService } from '../../util/apiService';
 
 const BaggageDetail = () => {
   const [baggage, setBaggage] = useState(null);
   const { baggageId } = useParams();
+  const auth = useRouteLoaderData('root');
 
   useEffect(() => {
     loadBaggage(baggageId);
@@ -26,7 +27,7 @@ const BaggageDetail = () => {
   }
 
   return (
-    <Container 
+    <Container
       maxWidth="sm">
       <Paper style={{ padding: '16px', marginTop: '32px' }}>
         <Card>
@@ -66,11 +67,13 @@ const BaggageDetail = () => {
                 <Box mt={2}>
                   <Grid container spacing={2} justifyContent="center">
                     <Grid item>
-                      <Link to={`/baggage/${baggage.baggageId}/edit`} style={{ textDecoration: 'none' }}>
-                        <Button variant="contained" color="primary">
-                          Edit
-                        </Button>
-                      </Link>
+                      {auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE") && (
+                        <Link to={`/baggage/${baggage.baggageId}/edit`} style={{ textDecoration: 'none' }}>
+                          <Button variant="contained" color="primary">
+                            Edit
+                          </Button>
+                        </Link>
+                      )}
                     </Grid>
                     <Grid item>
                       <Link to=".." style={{ textDecoration: 'none' }}>

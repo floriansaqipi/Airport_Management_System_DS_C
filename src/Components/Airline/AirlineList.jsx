@@ -54,7 +54,7 @@ export default function AirlineList() {
     { field: 'code', headerName: 'Code', width: 240 },
   ];
 
-  if (auth) {
+  if (auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE")) {
     columns.push(
       {
         field: 'edit',
@@ -94,7 +94,7 @@ export default function AirlineList() {
         <Typography variant="h4" component="h1" gutterBottom>
           Airlines
         </Typography>
-        {auth && (
+        {auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE") && (
           <Link
             to={`new`}
             style={{ textDecoration: 'none' }}>
