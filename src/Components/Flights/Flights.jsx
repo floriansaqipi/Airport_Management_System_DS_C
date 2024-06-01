@@ -6,6 +6,7 @@ import { GridActionsCellItem } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { apiService } from "../../util/apiService";
+import { useRouteLoaderData } from "react-router-dom";
 
 const Flights = () => {
     const [rows, setRows] = useState([]);
@@ -14,6 +15,7 @@ const Flights = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [currentRow, setCurrentRow] = useState(null);
     const [errors, setErrors] = useState({});
+    const auth = useRouteLoaderData("root");
 
     useEffect(() => {
         async function fetchFlights() {
@@ -111,8 +113,8 @@ const Flights = () => {
         }
 
         const updatedRow = { ...currentRow };
-        const formattedDepartureTime = updatedRow.departureTime ? new Date(updatedRow.departureTime).toISOString().slice(0, 16) : '';
-        const formattedArrivalTime = updatedRow.arrivalTime ? new Date(updatedRow.arrivalTime).toISOString().slice(0, 16) : '';
+        const formattedDepartureTime = updatedRow.departureTime ? new Date(new Date(currentRow.departureTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : '';
+        const formattedArrivalTime = updatedRow.arrivalTime ? new Date(new Date(currentRow.arrivalTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : '';
 
         const flightDto = {
             flightNumber: updatedRow.flightNumber,
@@ -198,37 +200,44 @@ const Flights = () => {
             headerName: 'Model',
             width: 200,
             valueGetter: params => params.row.aircraft.model,
-        },
-        {
+        }
+    ];
+
+    if (auth && auth.role !== "PASSENGER") {
+        columns.push({
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
             width: 100,
             cellClassName: 'actions',
-            getActions: ({ id }) => [
-                <GridActionsCellItem
-                    icon={<EditIcon />}
-                    label="Edit"
-                    className="textPrimary"
-                    onClick={handleEditClick(id)}
-                    color="inherit"
-                />,
-                <GridActionsCellItem
-                    icon={<DeleteIcon />}
-                    label="Delete"
-                    onClick={handleDeleteClick(id)}
-                    color="inherit"
-                />,
-            ],
-        },
-    ];
+            getActions: ({ id }) => {
+                return [
+                    <GridActionsCellItem
+                        icon={<EditIcon />}
+                        label="Edit"
+                        className="textPrimary"
+                        onClick={handleEditClick(id)}
+                        color="inherit"
+                    />,
+                    <GridActionsCellItem
+                        icon={<DeleteIcon />}
+                        label="Delete"
+                        onClick={handleDeleteClick(id)}
+                        color="inherit"
+                    />,
+                ];
+            },
+        });
+    }
 
     return (
         <Container className="home" maxWidth="xl">
             <h1 style={{ paddingBottom: "8px" }}>Flights</h1>
-            <Button variant="contained" color="primary" onClick={handleAddClick}>
-                Add New Flight
-            </Button>
+            {auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE") && (
+                <Button variant="contained" color="primary" onClick={handleAddClick}>
+                    Add New Flight
+                </Button>
+            )}
             <DataTable
                 rows={rows}
                 columns={columns}
@@ -288,17 +297,18 @@ const Flights = () => {
                                 label="Departure Time"
                                 type="datetime-local"
                                 fullWidth
-                                value={currentRow.departureTime ? new Date(currentRow.departureTime).toISOString().slice(0, 16) : ''}
+                                value={currentRow.departureTime ? new Date(new Date(currentRow.departureTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
                                 onChange={handleInputChange('departureTime')}
                                 error={!!errors.departureTime || !!errors.time}
                                 helperText={errors.departureTime || errors.time}
                             />
+
                             <TextField
                                 margin="dense"
                                 label="Arrival Time"
                                 type="datetime-local"
                                 fullWidth
-                                value={currentRow.arrivalTime ? new Date(currentRow.arrivalTime).toISOString().slice(0, 16) : ''}
+                                value={currentRow.arrivalTime ? new Date(new Date(currentRow.arrivalTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16): ''}
                                 onChange={handleInputChange('arrivalTime')}
                                 error={!!errors.arrivalTime || !!errors.time}
                                 helperText={errors.arrivalTime || errors.time}
