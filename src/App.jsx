@@ -22,6 +22,7 @@ import BaggageDetails from "./Components/Baggage/BaggageDetail";
 import EditBaggageForm from "./Components/Baggage/EditBaggageForm";
 import AddBaggageForm from "./Components/Baggage/AddBaggageForm";
 import Tickets from "./Components/Tickets/Tickets";
+import AbilityList from "./Components/Ability/AbilityList"
 import { action as LogoutAction } from "./Components/Users/Logout";
 import { authLoader, checkAuthAdminLoader, checkAuthEmployeeLoader, checkAuthLoader } from './util/auth'
 
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
       { path: "flights", element: <Flights /> },
       { path : 'tickets', element: <Tickets /> },
       { path: "airports", element: <AirportList /> },
+      { path: "abilities", element: <AbilityList /> },
       {
         path: "baggage",
         children: [
