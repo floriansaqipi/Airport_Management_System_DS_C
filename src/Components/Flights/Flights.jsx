@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "../../util/DataTable";
 import { format } from 'date-fns';
-import { Container, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem } from "@mui/material";
+import { Container, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Select, FormControl, InputLabel, Checkbox, ListItemText } from "@mui/material";
 import { GridActionsCellItem } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -11,9 +11,19 @@ import { useRouteLoaderData } from "react-router-dom";
 const Flights = () => {
     const [rows, setRows] = useState([]);
     const [airports, setAirports] = useState([]);
+    const [aircrafts, setAircrafts] = useState([]);
+    const [employees, setEmployees] = useState([]);
     const [openModal, setOpenModal] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [currentRow, setCurrentRow] = useState(null);
+    const [currentRow, setCurrentRow] = useState({
+        flightNumber: '',
+        departureAirport: '',
+        arrivalAirport: '',
+        departureTime: '',
+        arrivalTime: '',
+        aircraft: '',
+        employees: []
+    });
     const [errors, setErrors] = useState({});
     const auth = useRouteLoaderData("root");
 
@@ -43,12 +53,40 @@ const Flights = () => {
         }
     };
 
+    const fetchAircrafts = async () => {
+        try {
+            const response = await apiService.get("/private/aircrafts");
+            const aircraftsData = response;
+            console.log("Fetched aircrafts:", aircraftsData);
+            setAircrafts(aircraftsData);
+        } catch (error) {
+            console.error("Error fetching aircrafts:", error);
+        }
+    };
+
+    const fetchEmployees = async () => {
+        try {
+            const response = await apiService.get("/private/employees");
+            const employeesData = response;
+            console.log("Fetched employees:", employeesData);
+            setEmployees(employeesData);
+        } catch (error) {
+            console.error("Error fetching employees:", error);
+        }
+    };
+
     const handleEditClick = (id) => async () => {
         const rowToEdit = rows.find((row) => row.flightId === id);
-        setCurrentRow(rowToEdit);
+        setCurrentRow({
+            ...rowToEdit,
+            employees: rowToEdit.employees || []
+        });
         setIsEditing(true);
         setOpenModal(true);
+        await fetchAircrafts();
         await fetchAirports();
+        await fetchEmployees();
+        
     };
 
     const handleAddClick = async () => {
@@ -58,17 +96,27 @@ const Flights = () => {
             arrivalAirport: '',
             departureTime: '',
             arrivalTime: '',
-            aircraft: { tailNumber: '', model: '' },
+            aircraft: '',
             employees: []
         });
         setIsEditing(false);
         setOpenModal(true);
         await fetchAirports();
+        await fetchAircrafts();
+        await fetchEmployees();
     };
 
     const handleModalClose = () => {
         setOpenModal(false);
-        setCurrentRow(null);
+        setCurrentRow({
+            flightNumber: '',
+            departureAirport: '',
+            arrivalAirport: '',
+            departureTime: '',
+            arrivalTime: '',
+            aircraft: '',
+            employees: []
+        });
         setErrors({});
     };
 
@@ -85,6 +133,14 @@ const Flights = () => {
 
         if (!row.arrivalAirport || !row.arrivalAirport.airportId) {
             newErrors.arrivalAirport = "Arrival Airport is required.";
+        }
+
+        if (!row.aircraft || !row.aircraft.aircraftId) {
+            newErrors.aircraft = "Aircraft is required.";
+        }
+
+        if (!row.employees || row.employees.length === 0) {
+            newErrors.employees = "At least one employee is required.";
         }
 
         const departureTime = new Date(row.departureTime);
@@ -113,8 +169,8 @@ const Flights = () => {
         }
 
         const updatedRow = { ...currentRow };
-        const formattedDepartureTime = updatedRow.departureTime ? new Date(new Date(currentRow.departureTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : '';
-        const formattedArrivalTime = updatedRow.arrivalTime ? new Date(new Date(currentRow.arrivalTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : '';
+        const formattedDepartureTime = updatedRow.departureTime ? new Date(new Date(currentRow.departureTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16): '';
+        const formattedArrivalTime = updatedRow.arrivalTime ? new Date(new Date(currentRow.arrivalTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16): '';
 
         const flightDto = {
             flightNumber: updatedRow.flightNumber,
@@ -154,6 +210,20 @@ const Flights = () => {
         setCurrentRow({ ...currentRow, [field]: airport });
     };
 
+    const handleAircraftChange = (field) => (event) => {
+        const aircraft = aircrafts.find(aircraft => aircraft.aircraftId === event.target.value);
+        setCurrentRow({ ...currentRow, [field]: aircraft });
+    };
+
+    const handleEmployeeChange = (event) => {
+        const value = event.target.value;
+        const selectedEmployees = value.map(id => employees.find(emp => emp.employeeId === id));
+        setCurrentRow({
+            ...currentRow,
+            employees: selectedEmployees,
+        });
+    };
+
     const columns = [
         { field: 'flightId', headerName: 'Flight ID', editable: true },
         { field: 'flightNumber', headerName: 'Flight Number', width: 150, editable: true },
@@ -176,6 +246,15 @@ const Flights = () => {
             },
         },
         {
+            field: 'aircraftId',
+            headerName: 'Aircraft',
+            width: 200,
+            valueGetter: params => {
+                const aircraft = params.row.aircraft;
+                return aircraft ? aircraft.tailNumber : '';
+            },
+        },
+        {
             field: 'departureTime',
             headerName: 'Departure Time',
             width: 210,
@@ -189,22 +268,19 @@ const Flights = () => {
             valueGetter: params => new Date(params.row.arrivalTime),
             valueFormatter: params => params.value ? format(params.value, 'yyyy-MM-dd HH:mm:ss') : '',
         },
-        {
-            field: 'aircraft.tailNumber',
-            headerName: 'Tail Number',
-            width: 200,
-            valueGetter: params => params.row.aircraft.tailNumber,
-        },
-        {
-            field: 'aircraft.model',
-            headerName: 'Model',
-            width: 200,
-            valueGetter: params => params.row.aircraft.model,
-        }
     ];
 
     if (auth && auth.role !== "PASSENGER") {
-        columns.push({
+        columns.push(
+            {
+                field: 'employees',
+                headerName: 'Employees',
+                width: 300,
+                valueGetter: params => {
+                    return params.row.employees ? params.row.employees.map(emp => emp.name).join(', ') : '';
+                },
+            },
+            {
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
@@ -294,15 +370,47 @@ const Flights = () => {
                             </TextField>
                             <TextField
                                 margin="dense"
+                                label="Aircraft"
+                                select
+                                fullWidth
+                                value={currentRow.aircraft.aircraftId}
+                                onChange={handleAircraftChange('aircraft')}
+                                error={!!errors.aircraft}
+                                helperText={errors.aircraft}
+                            >
+                                {aircrafts.map((aircraft) => (
+                                    <MenuItem key={aircraft.aircraftId} value={aircraft.aircraftId}>
+                                        {aircraft.tailNumber}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                            <FormControl fullWidth margin="dense" error={!!errors.employees}>
+                                <InputLabel>Employees</InputLabel>
+                                <Select
+                                    multiple
+                                    value={currentRow.employees.map(emp => emp.employeeId)}
+                                    onChange={handleEmployeeChange}
+                                    renderValue={(selected) => employees.filter(emp => selected.includes(emp.employeeId)).map(emp => emp.name).join(', ')}
+                                >
+                                    {employees.map((employee) => (
+                                        <MenuItem key={employee.employeeId} value={employee.employeeId}>
+                                            <Checkbox checked={currentRow.employees.some(emp => emp.employeeId === employee.employeeId)} />
+                                            <ListItemText primary={employee.name} />
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                                {errors.employees && <p style={{ color: 'red', fontSize: '12px' }}>{errors.employees}</p>}
+                            </FormControl>
+                            <TextField
+                                margin="dense"
                                 label="Departure Time"
                                 type="datetime-local"
                                 fullWidth
-                                value={currentRow.departureTime ? new Date(new Date(currentRow.departureTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
+                                value={currentRow.departureTime ? new Date(new Date(currentRow.departureTime).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16): ''}
                                 onChange={handleInputChange('departureTime')}
                                 error={!!errors.departureTime || !!errors.time}
                                 helperText={errors.departureTime || errors.time}
                             />
-
                             <TextField
                                 margin="dense"
                                 label="Arrival Time"
@@ -312,22 +420,6 @@ const Flights = () => {
                                 onChange={handleInputChange('arrivalTime')}
                                 error={!!errors.arrivalTime || !!errors.time}
                                 helperText={errors.arrivalTime || errors.time}
-                            />
-                            <TextField
-                                margin="dense"
-                                label="Tail Number"
-                                type="text"
-                                fullWidth
-                                value={currentRow.aircraft.tailNumber}
-                                onChange={handleInputChange('aircraft')}
-                            />
-                            <TextField
-                                margin="dense"
-                                label="Model"
-                                type="text"
-                                fullWidth
-                                value={currentRow.aircraft.model}
-                                onChange={handleInputChange('aircraft')}
                             />
                         </>
                     )}
