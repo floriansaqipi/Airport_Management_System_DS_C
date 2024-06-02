@@ -248,6 +248,23 @@ const Navbar = () => {
                       </Typography>
                     </MenuItem>
                   )}
+                  {auth && (
+                    <MenuItem key="boarding_passes" onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">
+                        <NavLink
+                          to="/boarding_passes"
+                          style={{
+                            display: "block",
+                            padding: "10px",
+                            color: "hsl(240, 1%, 48%)",
+                            borderRadius: "5px",
+                          }}
+                        >
+                          Boarding Passes
+                        </NavLink>
+                      </Typography>
+                    </MenuItem>
+                  )}
                   {auth && auth.role !== "PASSENGER" && (
                     <MenuItem key="passengers" onClick={handleCloseNavMenu}>
                       <Typography textAlign="center">
@@ -405,6 +422,24 @@ const Navbar = () => {
                       }}
                     >
                       Tickets
+                    </NavLink>
+                  </Button>
+                )}
+                {auth &&(
+                  <Button
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: "hsl(240, 1%, 48%)", display: "block" }}
+                  >
+                    <NavLink
+                      to="/boarding_passes"
+                      style={{
+                        display: "block",
+                        padding: "10px",
+                        color: "hsl(240, 1%, 48%)",
+                        borderRadius: "5px",
+                      }}
+                    >
+                      Boarding Passes
                     </NavLink>
                   </Button>
                 )}
