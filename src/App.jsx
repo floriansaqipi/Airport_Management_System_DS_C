@@ -24,10 +24,7 @@ import AddBaggageForm from "./Components/Baggage/AddBaggageForm";
 import { action as LogoutAction } from "./Components/Users/Logout";
 import { authLoader, checkAuthAdminLoader, checkAuthEmployeeLoader, checkAuthLoader } from './util/auth'
 import Roles from "./Components/Role/Roles";
-import RoleDetails from "./Components/Role/RoleDetails";
-import EditRole from "./Components/Role/EditRole";
-import AddRole from "./Components/Role/AddRole";
-import { loader as rolesLoader} from './Components/Role/Roles'
+import { loader as rolesLoader, addRoleAction} from './Components/Role/Roles'
 
 const router = createBrowserRouter([
   {
@@ -98,37 +95,8 @@ const router = createBrowserRouter([
       { path: "users", element: <UserList />, loader: checkAuthAdminLoader },
       {
         path: 'roles',
-        children: [
-          {
-            index: true,
-            element: <Roles />,
-            loader: rolesLoader,
-          },
-          {
-            path: ':roleId',
-            id: 'role-detail',
-            // loader: roleDetailLoader,
-            children: [
-              {
-                index: true,
-                element: <RoleDetails />,
-                
-              },
-              {
-                path: 'edit',
-                element: <EditRole />,
-                // action: manipulateEventAction,
-                loader: checkAuthLoader,
-              },
-            ],
-          },
-          {
-            path: 'new',
-            element: <AddRole />,
-            // action: manipulateEventAction,
-            // loader: roleAddLoader,
-          },
-        ],
+        element: <Roles/>,
+        loader: rolesLoader,
       },
       //{ path: "signup", element: <Signup /> },
       { path: "logout", action: LogoutAction },

@@ -1,4 +1,4 @@
-import { useLoaderData, json } from "react-router-dom";
+import { useLoaderData, json, redirect, Form, useRouteLoaderData, useSubmit } from "react-router-dom";
 import { checkAuthAdminLoader, getAuth } from "../../util/auth";
 import * as React from "react";
 import Box from "@mui/material/Box";
@@ -8,6 +8,14 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import { useTheme } from "@mui/material/styles";
+
+import DeleteRoleModal from "./DeleteRoleModal";
+import ErrorAlert from './ErrorAlert'
+
 import {
   GridRowModes,
   DataGrid,
@@ -15,46 +23,39 @@ import {
   GridActionsCellItem,
   GridRowEditStopReasons,
 } from "@mui/x-data-grid";
-import { Container } from "@mui/material";
+import {
+  Container,
+  Select,
+  MenuItem,
+  Checkbox,
+  ListItemText,
+} from "@mui/material";
 
-const roles = ["Market", "Finance", "Development"];
-const randomRole = () => {
-  return "Market";
-};
 
-const initialRows = [
-  {
-    id: 1,
-    name: "role",
-    age: 25,
-    joinDate: new Date(),
-    role: "role",
-  },
-  {
-    id: 1,
-    name: "role",
-    age: 25,
-    joinDate: new Date(),
-    role: "role",
-  },
-  {
-    id: 1,
-    name: "role",
-    age: 25,
-    joinDate: new Date(),
-    role: "role",
-  },
-];
+
 
 function EditToolbar(props) {
-  const { setRows, setRowModesModel } = props;
+  const { setRows, setRowModesModel, roles } = props;
+
+  let lastestId = roles.length > 0 ? roles[roles.length-1].roleId + 1 : 1
+  let [ stateId, setStateId ] = React.useState(lastestId)
+
+
 
   const handleClick = () => {
-    const id = 24;
-    setRows((oldRows) => [...oldRows, { id, name: "", age: "", isNew: true }]);
+    const id = stateId; // Generate a unique ID for the new role
+    setStateId(prevState => ++prevState)
+    const newRole = {
+      roleId: id, // Assign a unique ID
+      roleName: "", // Initialize other fields as empty or default values
+      users: [],
+      abilities: [],
+      isNew: true
+    };
+    setRows((oldRows) => [...oldRows, newRole]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "roleName" }, // Focus on editing the roleName field
     }));
   };
 
@@ -67,11 +68,53 @@ function EditToolbar(props) {
   );
 }
 
+
+function MultipleSelect(props) {
+  const { id, value, api, field, abilities, updateRowAbilities } = props;
+
+  const [selectedAbilities, setSelectedAbilities] = React.useState([]);
+
+  React.useEffect(() => {
+    setSelectedAbilities(value.map((ability) => ability.abilityId));
+  }, [value]);
+
+  const handleChange = (event) => {
+    const { value: selectedValues } = event.target;
+    setSelectedAbilities(selectedValues);
+    const updatedAbilities = abilities.filter(ability =>
+      selectedValues.includes(ability.abilityId)
+    );
+    updateRowAbilities(id, updatedAbilities); // Invoke callback to update rows
+  };
+
+  return (
+    <FormControl sx={{ width: 550 }}>
+      <Select
+        labelId={`abilities-label-${id}`}
+        id={`abilities-${id}`}
+        multiple
+        value={selectedAbilities}
+        onChange={handleChange}
+        input={<OutlinedInput label="Abilities" />}
+      >
+        {abilities.map((ability) => (
+          <MenuItem key={ability.abilityId} value={ability.abilityId}>
+            {`${ability.abilityId}: ${ability.entity} - ${ability.verb} - ${ability.field}`}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+}
+
 export default function FullFeaturedCrudGrid() {
-  const data = useLoaderData();
-  console.log(data);
-  const [rows, setRows] = React.useState(data);
+  const { roles, abilities } = useLoaderData();
+  const [rows, setRows] = React.useState(roles);
   const [rowModesModel, setRowModesModel] = React.useState({});
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [error, setError] = React.useState(null);
 
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -89,8 +132,9 @@ export default function FullFeaturedCrudGrid() {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
-  const handleDeleteClick = (id) => () => {
-    setRows(rows.filter((row) => row.id !== id));
+  const handleDeleteClick = async (id) => {
+    await deleteRoleAction(id);
+    setRows(rows.filter((row) => row.roleId !== id));
   };
 
   const handleCancelClick = (id) => () => {
@@ -99,40 +143,62 @@ export default function FullFeaturedCrudGrid() {
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
 
-    const editedRow = rows.find((row) => row.id === id);
+    const editedRow = rows.find((row) => row.roleId === id);
     if (editedRow.isNew) {
-      setRows(rows.filter((row) => row.id !== id));
+      setRows(rows.filter((row) => row.roleId !== id));
     }
   };
 
-  const processRowUpdate = (newRow) => {
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    return updatedRow;
+  const processRowUpdate = async (newRow) => {
+    
+    const newRowId = newRow.roleId;
+    const row = getRowById(newRowId)
+    row.roleName = newRow.roleName
+    // const updatedRow = { ...newRow, isNew: false };
+    // console.log(updatedRow);
+    
+    // setRows(rows.map((row) => (row.roleId === newRow.roleId ? updatedRow : row)));
+    if(row.roleName === ''){
+      setError('Name of the role can not be empty');
+      return;
+    }
+
+    const formData = {
+      roleName : row.roleName,
+      abilityIds : row.abilities.map(ability => ability.abilityId)
+    }
+
+    let result;
+
+    if (row.isNew) {
+      result = await addRoleAction(formData);
+    }else {
+      formData.roleId = row.roleId
+      result = await editRoleAction(formData); 
+    }
+
+    if(result.isError){
+      setError(result.response.message)
+      return;
+    };
+    setError(null);
+    return {...row, isNew: false};
   };
 
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
 
-  const arrayViewModelMapper = (dataArray) => {
-    return dataArray.map((element) => {
-      return {
-        roleId: element.roleId,
-        roleName: element.roleName,
-        numberOfUsers: element.users.length,
-        abilities: element.abilities
-          .map(
-            (ability) =>
-              `${ability.abilityId}: ${ability.entity} - ${ability.verb} - ${ability.field}`
-          )
-          .join(", "),
-      };
-    });
+  const updateRowAbilities = (id, selectedAbilities) => {
+    setRows(rows.map(row => 
+      row.roleId === id ? { ...row, abilities: selectedAbilities } : row
+    ));
   };
 
+  const getRowById = (id) => rows.find(row => row.roleId === id)
+
   const columns = [
-    { field: "roleId", headerName: "Id", width: 150, editable: true },
+    { field: "roleId", headerName: "Id", width: 150 },
     {
       field: "roleName",
       headerName: "name",
@@ -146,14 +212,30 @@ export default function FullFeaturedCrudGrid() {
       field: "numberOfUsers",
       headerName: "Number of Users",
       type: "number",
-      width: 150,
-      editable: true,
+      width: 200,
+      align: "left",
+      headerAlign: "left",
+      renderCell: (params) => {
+        return params.row.users.length;
+      },
     },
     {
       field: "abilities",
       headerName: "Abilities",
       width: 500,
       editable: true,
+      renderCell: (params) => {
+        return params.value
+          .map(
+            (ability) =>
+              `${ability.abilityId}: ${ability.entity} - ${ability.verb} - ${ability.field}`
+          )
+          .join(", ");
+      },
+
+      renderEditCell: (params) => {
+        return <MultipleSelect {...params} abilities={abilities} updateRowAbilities={updateRowAbilities}  />;
+      },
     },
     {
       field: "actions",
@@ -166,14 +248,17 @@ export default function FullFeaturedCrudGrid() {
 
         if (isInEditMode) {
           return [
-            <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              sx={{
-                color: "primary.main",
-              }}
-              onClick={handleSaveClick(id)}
-            />,
+            // <Form method="" action="" >
+
+              <GridActionsCellItem
+                icon={<SaveIcon />}
+                label="Save"
+                sx={{
+                  color: "primary.main",
+                }}
+                onClick={handleSaveClick(id)}
+              />,
+            
             <GridActionsCellItem
               icon={<CancelIcon />}
               label="Cancel"
@@ -181,6 +266,7 @@ export default function FullFeaturedCrudGrid() {
               onClick={handleCancelClick(id)}
               color="inherit"
             />,
+            
           ];
         }
 
@@ -195,9 +281,10 @@ export default function FullFeaturedCrudGrid() {
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
-            onClick={handleDeleteClick(id)}
+            onClick={handleOpen}
             color="inherit"
           />,
+          <DeleteRoleModal open={open} handleClose={handleClose} handleDeleteClick={handleDeleteClick} id={id} />
         ];
       },
     },
@@ -205,6 +292,7 @@ export default function FullFeaturedCrudGrid() {
 
   return (
     <Container maxWidth="lg">
+      {error && <ErrorAlert  errorMessage={error}/> }
       <Box
         sx={{
           height: 500,
@@ -219,7 +307,7 @@ export default function FullFeaturedCrudGrid() {
         my={4}
       >
         <DataGrid
-          rows={arrayViewModelMapper(rows)}
+          rows={rows}
           columns={columns}
           getRowId={getRowId}
           editMode="row"
@@ -231,7 +319,7 @@ export default function FullFeaturedCrudGrid() {
             toolbar: EditToolbar,
           }}
           slotProps={{
-            toolbar: { setRows, setRowModesModel },
+            toolbar: { setRows, setRowModesModel, roles },
           }}
         />
       </Box>
@@ -240,31 +328,136 @@ export default function FullFeaturedCrudGrid() {
 }
 
 export const loader = async () => {
-  checkAuthAdminLoader();
+  const resultAuth = checkAuthAdminLoader();
+  if(resultAuth != null){
+    return resultAuth;
+  }
+
+
   const auth = getAuth();
-  const response = await fetch("/api/private/roles", {
+  const responseRoles = await fetch("/api/private/roles", {
     headers: {
       "Content-Type": "application/json",
       Authorization: "Bearer " + auth.token,
     },
   });
 
-  if (response.status === 422) {
-    return response;
+  if (responseRoles.status === 422) {
+    return responseRoles;
   }
 
-  if (!response.ok) {
-    // return { isError: true, message: 'Could not fetch events.' };
-    // throw new Response(JSON.stringify({ message: 'Could not fetch events.' }), {
-    //   status: 500,
-    // });
+  if (!responseRoles.ok) {
     throw json(
       { message: "Could not fetch roles." },
       {
         status: 500,
       }
     );
-  } else {
-    return response;
   }
+
+  const responseAbilities = await fetch("/api/private/abilities", {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + auth.token,
+    },
+  });
+
+  if (responseAbilities.status === 422) {
+    return responseAbilities;
+  }
+
+  if (!responseAbilities.ok) {
+    throw json(
+      { message: "Could not fetch abilities." },
+      {
+        status: 500,
+      }
+    );
+  }
+
+  const roles = await responseRoles.json();
+  const abilities = await responseAbilities.json();
+
+  return { roles, abilities };
 };
+
+export async function addRoleAction(data) {
+ 
+  const roleData = {
+    roleName: data.roleName,
+    abilityIds: data.abilityIds
+  }
+
+  const auth = getAuth();
+  const responseRole = await fetch("/api/private/roles", {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + auth.token,
+    },
+    body: JSON.stringify(roleData),
+  });
+
+
+  if (responseRole.status === 400) {
+    const response = await responseRole.json()
+    return {isError: true, response};
+  }
+
+  if (!responseRole.ok) {
+    throw json({ message: 'Could not save role.' }, { status: 500 });
+  }
+}
+
+export async function editRoleAction(data) {
+  const roleData = {
+    roleId: data.roleId,
+    roleName: data.roleName,
+    abilityIds: data.abilityIds
+  }
+
+  const auth = getAuth();
+  const responseRole = await fetch("/api/private/roles", {
+    method: 'PUT',
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + auth.token,
+    },
+    body: JSON.stringify(roleData),
+  });
+
+
+  if (responseRole.status === 400) {
+    const response = await responseRole.json()
+    return {isError: true, response};
+  }
+
+  if (!responseRole.ok) {
+    throw json({ message: 'Could not edit role.' }, { status: 500 });
+  }
+}
+
+export async function deleteRoleAction(id) {
+
+  const auth = getAuth();
+  const responseRole = await fetch("/api/private/roles/" + id, {
+    method: 'DELETE',
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + auth.token,
+    },
+  });
+
+  const response = await responseRole.json()
+
+  if (responseRole.status === 400) {
+    return {isError: true, response};
+  }
+
+  if (!responseRole.ok) {
+    throw json({ message: 'Could not delete role.' }, { status: 500 });
+  }
+
+  return response;
+}
+
