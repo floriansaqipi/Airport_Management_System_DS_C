@@ -1,4 +1,4 @@
-import { useLoaderData, json, redirect, Form, useRouteLoaderData, useSubmit } from "react-router-dom";
+import { useLoaderData, json, redirect, Form, useRouteLoaderData, useSubmit, useNavigate } from "react-router-dom";
 import { checkAuthAdminLoader, getAuth } from "../../util/auth";
 import * as React from "react";
 import Box from "@mui/material/Box";
@@ -37,14 +37,13 @@ import {
 function EditToolbar(props) {
   const { setRows, setRowModesModel, roles } = props;
 
-  let lastestId = roles.length > 0 ? roles[roles.length-1].roleId + 1 : 1
-  let [ stateId, setStateId ] = React.useState(lastestId)
+
 
 
 
   const handleClick = () => {
-    const id = stateId; // Generate a unique ID for the new role
-    setStateId(prevState => ++prevState)
+    const id = 0; // Generate a unique ID for the new role
+
     const newRole = {
       roleId: id, // Assign a unique ID
       roleName: "", // Initialize other fields as empty or default values
@@ -181,8 +180,13 @@ export default function FullFeaturedCrudGrid() {
       setError(result.response.message)
       return;
     };
-    setError(null);
-    return {...row, isNew: false};
+    row.roleId = result.roleId;
+    row.isNew = false;
+
+    setRows((prevRows) =>
+      prevRows.map((prevRow) => (prevRow.roleId === newRowId ? row : prevRow))
+    );
+    return row;
   };
 
   const handleRowModesModelChange = (newRowModesModel) => {
@@ -399,14 +403,17 @@ export async function addRoleAction(data) {
   });
 
 
+  const response = await responseRole.json()
+  
   if (responseRole.status === 400) {
-    const response = await responseRole.json()
     return {isError: true, response};
   }
 
   if (!responseRole.ok) {
     throw json({ message: 'Could not save role.' }, { status: 500 });
   }
+
+  return response;
 }
 
 export async function editRoleAction(data) {
@@ -426,15 +433,17 @@ export async function editRoleAction(data) {
     body: JSON.stringify(roleData),
   });
 
+  const response = await responseRole.json()
 
   if (responseRole.status === 400) {
-    const response = await responseRole.json()
     return {isError: true, response};
   }
 
   if (!responseRole.ok) {
     throw json({ message: 'Could not edit role.' }, { status: 500 });
   }
+
+  return response;
 }
 
 export async function deleteRoleAction(id) {
@@ -448,16 +457,11 @@ export async function deleteRoleAction(id) {
     },
   });
 
-  const response = await responseRole.json()
-
-  if (responseRole.status === 400) {
-    return {isError: true, response};
-  }
 
   if (!responseRole.ok) {
     throw json({ message: 'Could not delete role.' }, { status: 500 });
   }
 
-  return response;
+
 }
 

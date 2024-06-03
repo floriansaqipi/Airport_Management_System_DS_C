@@ -301,6 +301,23 @@ const Navbar = () => {
                       </Typography>
                     </MenuItem>
                   )}
+                  {auth && auth.role === 'ADMIN' && (
+                    <MenuItem key="signup" onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">
+                        <NavLink
+                          to="/roles"
+                          style={{
+                            display: "block",
+                            padding: "10px",
+                            color: "hsl(240, 1%, 48%)",
+                            borderRadius: "5px",
+                          }}
+                        >
+                          Roles
+                        </NavLink>
+                      </Typography>
+                    </MenuItem>
+                  )}
                   {auth && (
                     <Form action="/logout" method="post">
                       <Button
@@ -484,6 +501,26 @@ const Navbar = () => {
                         }}
                       >
                         Users
+                      </NavLink>
+                    </Button>
+                    <Button
+                      onClick={handleCloseNavMenu}
+                      sx={{
+                        my: 2,
+                        color: "hsl(240, 1%, 48%)",
+                        display: "block",
+                      }}
+                    >
+                      <NavLink
+                        to="/roles"
+                        style={{
+                          display: "block",
+                          padding: "10px",
+                          color: "hsl(240, 1%, 48%)",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        Roles
                       </NavLink>
                     </Button>
                   </React.Fragment>
