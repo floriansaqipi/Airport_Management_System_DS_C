@@ -14,7 +14,7 @@ const AddAirlineForm = () => {
     try {
       await apiService.post('/private/airlines', airline);
       alert("Airline added successfully!");
-      navigate('/airlines');
+      navigate('..');
     } catch (error) {
       setErrors(prevErrors => ({ ...prevErrors, code:'The name or code already exists!', name: 'The name or code already exists!' }));
       console.error('There was an error saving the airline!', error);

@@ -21,6 +21,12 @@ import BaggageList from "./Components/Baggage/BaggageList";
 import BaggageDetails from "./Components/Baggage/BaggageDetail";
 import EditBaggageForm from "./Components/Baggage/EditBaggageForm";
 import AddBaggageForm from "./Components/Baggage/AddBaggageForm";
+import Tickets from "./Components/Tickets/Tickets";
+import BoardingPassList from "./Components/BoardingPass/BoardingPassList";
+import BoardingPassDetail from "./Components/BoardingPass/BoardingPassDetail";
+import AddBoardingPassForm from "./Components/BoardingPass/AddBoardingPassForm";
+import EditBoardingPassForm from "./Components/BoardingPass/EditBoardingPassForm";
+import AbilityList from "./Components/Ability/AbilityList"
 import { action as LogoutAction } from "./Components/Users/Logout";
 import { authLoader, checkAuthAdminLoader, checkAuthEmployeeLoader, checkAuthLoader } from './util/auth'
 import Roles from "./Components/Role/Roles";
@@ -35,8 +41,9 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <ActualHome /> },
       { path: "flights", element: <Flights /> },
-      // { path : 'tickets', element: <Tickets /> },
+      { path : 'tickets', element: <Tickets /> },
       { path: "airports", element: <AirportList /> },
+      { path: "abilities", element: <AbilityList /> },
       {
         path: "baggage",
         children: [
@@ -91,6 +98,24 @@ const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path: "boarding_passes",
+        children: [
+          { index: true, element: <BoardingPassList />, loader: checkAuthLoader },
+          {
+            path: ":boardingPassId",
+            children: [
+              { index: true, element: <BoardingPassDetail />, loader: checkAuthLoader },
+              { path: "edit", element: <EditBoardingPassForm />, loader: checkAuthLoader },
+            ],
+          },
+          {
+            path: "new",
+            element: <AddBoardingPassForm />,
+            loader: checkAuthLoader
+          },
+        ],
+      },
       { path: "employees", element: <EmployeeList />, loader: checkAuthAdminLoader },
       { path: "users", element: <UserList />, loader: checkAuthAdminLoader },
       {
@@ -98,7 +123,6 @@ const router = createBrowserRouter([
         element: <Roles/>,
         loader: rolesLoader,
       },
-      //{ path: "signup", element: <Signup /> },
       { path: "logout", action: LogoutAction },
     ],
   },

@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
 import { styled } from '@mui/material/styles';
 import SearchBarForUsers from './SearchBarForUsers';
+import { apiService } from "../../util/apiService";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
@@ -63,22 +64,11 @@ function UserList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbXBsb3llZTIiLCJpYXQiOjE3MTY3NjM5NjcsImV4cCI6MTcxNjc2NzU2N30.9dYK2sPqlVABdw71YRPzqWsqCKQcBk-hjG_OkymnzCCUfjoWIAU-Y-1xODHsjYC0anOBJgiyTJpITQNSsaxb4Q";
-        const response = await fetch('/api/private/users', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Error fetching data');
-        }
-
-        const responseData = await response.json();
-        const modifiedData = responseData.map((user) => ({
+        const response = await apiService.get('/private/users');
+        const modifiedData = response.map((user) => ({
           userID: user.userId,
           username: user.username,
-          role: user.role ? user.role.roleName : 'Role Not Specified'
+          role: user.role ? user.role.roleName : 'Role Not Specified',
         }));
 
         setData(modifiedData);
@@ -102,7 +92,6 @@ function UserList() {
     );
     setFilteredData(filtered);
   };
-  
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -152,7 +141,7 @@ function UserList() {
           <Table stickyHeader aria-label="sticky table">
             <StyledTableHeader>
               <TableRow>
-              {columns.map((column) => (
+                {columns.map((column) => (
                   <StyledTableCell key={column.id} align={column.align}>
                     {column.label}
                   </StyledTableCell>

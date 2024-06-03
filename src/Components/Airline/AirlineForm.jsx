@@ -1,9 +1,13 @@
 import React from 'react';
 import { Button, TextField, Container, Typography, Box, Paper, Grid } from '@mui/material';
-import { Link, useRouteLoaderData } from 'react-router-dom';
+import { Link, useRouteLoaderData, useNavigate, useLocation } from 'react-router-dom';
 
 const AirlineForm = ({ airline, setAirline, handleSubmit, title, submitButtonLabel, errors, setErrors }) => {
   const auth = useRouteLoaderData('root');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || '/airlines';
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setAirline(prevAirline => ({
@@ -82,16 +86,18 @@ const AirlineForm = ({ airline, setAirline, handleSubmit, title, submitButtonLab
             </Grid>
           </Grid>
           <Box mt={3} display="flex" justifyContent="space-between">
-            {auth && (
+            {auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE") && (
               <Button type="submit" variant="contained" color="primary">
                 {submitButtonLabel}
-              </Button> 
-            )}
-            <Link to={`/airlines`} style={{ textDecoration: 'none' }}>
-              <Button variant="contained" color="secondary" style={{ marginRight: '10px' }}>
-                Go Back
               </Button>
-            </Link>
+            )}
+            <Button
+              onClick={() => navigate(from)}
+              variant="contained"
+              color="secondary"
+            >
+              Go Back
+            </Button>
           </Box>
         </form>
       </Paper>

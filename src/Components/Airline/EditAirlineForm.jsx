@@ -31,7 +31,7 @@ const EditAirlineForm = () => {
     try {
       await apiService.put(`/private/airlines`, airline);
       alert("Airline updated successfully!");
-      navigate('/airlines');
+      navigate('../..');
     } catch (error) {
       setErrors(prevErrors => ({
         ...prevErrors, code: 'The name or code already exists!', name: 'The name or code already exists!'

@@ -6,7 +6,6 @@ import { apiService } from '../../util/apiService';
 import { useRouteLoaderData } from 'react-router-dom';
 
 const EmployeeList = () => {
-
     const [employees, setEmployees] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [currentEmployee, setCurrentEmployee] = useState(null);
@@ -107,7 +106,7 @@ const EmployeeList = () => {
             headerName: 'Actions',
             width: 300,
             renderCell: (params) => (
-                auth && (
+                auth && auth.role === "ADMIN" && (
                     <div>
                         <Button
                             variant="contained"
@@ -155,7 +154,7 @@ const EmployeeList = () => {
                 <Typography variant="h4" component="h1" gutterBottom>
                     Employee
                 </Typography>
-                {auth && (
+                {auth && auth.role === "ADMIN" && (
                     <Button variant="contained" color="primary" onClick={handleAddEmployee}>
                         Add Employee
                     </Button>
@@ -176,7 +175,6 @@ const EmployeeList = () => {
                 onSave={handleSaveEmployee}
                 employeeData={currentEmployee}
                 mode={modalMode}
-                existingUsernames={employees.map(employee => employee.username)}
             />
             <Modal
                 open={deleteModalIsOpen}

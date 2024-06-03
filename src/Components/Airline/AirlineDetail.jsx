@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useRouteLoaderData } from 'react-router-dom';
+import { useParams, Link, useRouteLoaderData, useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, Typography, Button, Box, Container, Paper, Grid } from '@mui/material';
 import { apiService } from '../../util/apiService';
 
 const AirlineDetail = () => {
   const [airline, setAirline] = useState(null);
   const { airlineId } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from;
   const auth = useRouteLoaderData('root');
 
   useEffect(() => {
@@ -47,8 +50,11 @@ const AirlineDetail = () => {
                 <Box mt={2}>
                   <Grid container spacing={2} justifyContent="center">
                     <Grid item>
-                      {auth && (
-                        <Link to={`edit`} style={{ textDecoration: 'none' }}>
+                      {auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE") && (
+                        <Link
+                          to={`edit`}
+                          style={{ textDecoration: 'none' }}
+                        >
                           <Button variant="contained" color="primary">
                             Edit
                           </Button>
@@ -56,11 +62,12 @@ const AirlineDetail = () => {
                       )}
                     </Grid>
                     <Grid item>
-                      <Link to=".." style={{ textDecoration: 'none' }}>
-                        <Button variant="contained" color="secondary">
-                          Back
-                        </Button>
-                      </Link>
+                      <Button variant="contained"
+                        color="secondary"
+                        onClick={() => navigate(from)}
+                      >
+                        Back
+                      </Button>
                     </Grid>
                   </Grid>
                 </Box>

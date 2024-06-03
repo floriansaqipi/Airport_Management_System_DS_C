@@ -42,7 +42,11 @@ export default function AirlineList() {
       width: 300,
       renderCell: (params) => (
         auth ? (
-          <Link to={`${params.row.airlineId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Link
+            to={`${params.row.airlineId}`}
+            state={{ from: '/airlines' }}
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
             {params.row.name}
           </Link>) : (<span>{params.row.name}</span>)
       )
@@ -50,14 +54,17 @@ export default function AirlineList() {
     { field: 'code', headerName: 'Code', width: 240 },
   ];
 
-  if (auth) {
+  if (auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE")) {
     columns.push(
       {
         field: 'edit',
         headerName: 'Edit',
         width: 100,
         renderCell: (params) => (
-          <Link to={`${params.row.airlineId}/edit`} style={{ textDecoration: 'none' }}>
+          <Link
+            to={`${params.row.airlineId}/edit`}
+            style={{ textDecoration: 'none' }}
+          >
             <IconButton color="primary">
               <EditIcon />
             </IconButton>
@@ -87,8 +94,10 @@ export default function AirlineList() {
         <Typography variant="h4" component="h1" gutterBottom>
           Airlines
         </Typography>
-        {auth && (
-          <Link to={`new`} style={{ textDecoration: 'none' }}>
+        {auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE") && (
+          <Link
+            to={`new`}
+            style={{ textDecoration: 'none' }}>
             <Button variant="contained" color="primary" style={{ marginRight: '10px' }}>
               Add Airline
             </Button>

@@ -44,7 +44,7 @@ const EditPassengerForm = () => {
     e.preventDefault();
     try {
       await apiService.put(`/private/passengers`, passenger);
-      navigate('..');
+      navigate('../..');
     } catch (error) {
       console.error('There was an error saving the passenger!', error);
       alert('There was an error saving the passenger! Check the console for more details.');
