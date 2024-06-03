@@ -28,7 +28,9 @@ import AddBoardingPassForm from "./Components/BoardingPass/AddBoardingPassForm";
 import EditBoardingPassForm from "./Components/BoardingPass/EditBoardingPassForm";
 import AbilityList from "./Components/Ability/AbilityList"
 import { action as LogoutAction } from "./Components/Users/Logout";
-import { authLoader, checkAuthAdminLoader, checkAuthEmployeeLoader, checkAuthLoader } from './util/auth';
+import { authLoader, checkAuthAdminLoader, checkAuthEmployeeLoader, checkAuthLoader } from './util/auth'
+import Roles from "./Components/Role/Roles";
+import { loader as rolesLoader, addRoleAction} from './Components/Role/Roles'
 
 const router = createBrowserRouter([
   {
@@ -116,6 +118,11 @@ const router = createBrowserRouter([
       },
       { path: "employees", element: <EmployeeList />, loader: checkAuthAdminLoader },
       { path: "users", element: <UserList />, loader: checkAuthAdminLoader },
+      {
+        path: 'roles',
+        element: <Roles/>,
+        loader: rolesLoader,
+      },
       { path: "logout", action: LogoutAction },
     ],
   },
