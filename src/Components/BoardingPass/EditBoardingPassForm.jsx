@@ -146,7 +146,8 @@ const EditBoardingPassForm = () => {
     }
 
     try {
-      await apiService.put(`/private/boarding_passes/${boardingPassId}`, {
+      await apiService.put(`/private/boarding_passes`, {
+        boardingPassId, 
         gate: boardingPass.gate,
         boardingTime: boardingPass.boardingTime,
         ticket: { ticketId: boardingPass.ticketId }

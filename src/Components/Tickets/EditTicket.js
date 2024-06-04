@@ -183,7 +183,7 @@ const EditTicket = ({ isOpen, onClose, onSave, ticketData, onReload, onDelete })
             <PassengersList selectedPassenger={ticket.passengerId} onPassengerChange={handlePassengerChange} />
             {formInputsValidity.passengerId.message && <FormHelperText error>{formInputsValidity.passengerId.message}</FormHelperText>}
             
-            <Box mt={2}>
+            <Box mt={2} style={{display : 'flex', justifyContent : 'row'}}>
               <Button type="submit" variant="contained" color="primary">
                 {ticketData ? 'Update' : 'Add'} Ticket
               </Button>

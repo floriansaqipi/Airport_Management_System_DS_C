@@ -183,6 +183,7 @@ export default function FullFeaturedCrudGrid() {
     row.roleId = result.roleId;
     row.isNew = false;
 
+    setError(null);
     setRows((prevRows) =>
       prevRows.map((prevRow) => (prevRow.roleId === newRowId ? row : prevRow))
     );

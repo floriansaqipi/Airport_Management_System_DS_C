@@ -19,9 +19,9 @@ const AddTicketCard = ({ onAdd }) => {
                 <img src={logo} className={styles["airliner-logo"]} alt="Airline logo" />
               </div>
               <div className={styles.route}>
-                <h2>NYC</h2>
+                <h2>DEP</h2>
                 <FlightIcon className={styles["flight-icon"]} />
-                <h2>ATL</h2>
+                <h2>ARR</h2>
               </div>
               <AddTicketButton onAdd={onAdd}/>
             </div>
