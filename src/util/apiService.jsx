@@ -1,8 +1,11 @@
+import { getAuth } from "./auth";
+
 const API_URL = '/api';
 
 const handleResponse = async (response) => {
     const contentType = response.headers.get('content-type');
     let data;
+
     
     if (contentType && contentType.indexOf('application/json') !== -1) {
         data = await response.json();
@@ -11,6 +14,7 @@ const handleResponse = async (response) => {
     }
 
     if (!response.ok) {
+        alert(data.message)
         throw new Error(data.message || data || 'Network response was not ok');
     }
     
@@ -18,24 +22,30 @@ const handleResponse = async (response) => {
 };
 
 const getHeaders = () => {
-    const token = localStorage.getItem('token');
+    const auth = getAuth();
     return {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `Bearer ${auth.token}`,
+    };
+};
+
+const getPublicHeaders = () => {
+    return {
+        'Content-Type': 'application/json',
     };
 };
 
 export const apiService = {
     get: async (url) => {
         const response = await fetch(`${API_URL}${url}`, {
-            headers: getHeaders(),
+            headers: url.includes('private') ? getHeaders() : getPublicHeaders(),
         });
         return handleResponse(response);
     },
     post: async (url, data) => {
         const response = await fetch(`${API_URL}${url}`, {
             method: 'POST',
-            headers: getHeaders(),
+            headers: url.includes('private') ? getHeaders() : getPublicHeaders(),
             body: JSON.stringify(data),
         });
         return handleResponse(response);
@@ -43,7 +53,7 @@ export const apiService = {
     put: async (url, data) => {
         const response = await fetch(`${API_URL}${url}`, {
             method: 'PUT',
-            headers: getHeaders(),
+            headers: url.includes('private') ? getHeaders() : getPublicHeaders(),
             body: JSON.stringify(data),
         });
         return handleResponse(response);
@@ -51,7 +61,7 @@ export const apiService = {
     delete: async (url) => {
         const response = await fetch(`${API_URL}${url}`, {
             method: 'DELETE',
-            headers: getHeaders(),
+            headers: url.includes('private') ? getHeaders() : getPublicHeaders(),
         });
         return handleResponse(response);
     },

@@ -1,18 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link, useRouteLoaderData } from 'react-router-dom';
 import { Button, TextField, Container, Typography, Box, Paper, Grid } from '@mui/material';
 import { apiService } from '../../util/apiService';
 
 const EditPassengerForm = () => {
-  const [passenger, setPassenger] = useState({ name: '', passportNumber: '', nationality: '', contactDetails: '', username: '', password: '' });
-  const { id } = useParams();
+  const [passenger, setPassenger] = useState({
+    name: '',
+    passportNumber: '',
+    nationality: '',
+    contactDetails: '',
+    username: '',
+    password: ''
+  });
+  const { passengerId } = useParams();
   const navigate = useNavigate();
+  const auth = useRouteLoaderData('root');
 
   useEffect(() => {
-    if (id) {
-      loadPassenger(id);
+    if (passengerId) {
+      loadPassenger(passengerId);
     }
-  }, [id]);
+  }, [passengerId]);
 
   const loadPassenger = async (id) => {
     try {
@@ -36,7 +44,7 @@ const EditPassengerForm = () => {
     e.preventDefault();
     try {
       await apiService.put(`/private/passengers`, passenger);
-      navigate('/passengers');
+      navigate('../..');
     } catch (error) {
       console.error('There was an error saving the passenger!', error);
       alert('There was an error saving the passenger! Check the console for more details.');
@@ -44,9 +52,8 @@ const EditPassengerForm = () => {
   };
 
   return (
-    <Container 
-    className='home'
-    maxWidth="sm">
+    <Container
+      maxWidth="sm">
       <Paper elevation={3} sx={{ padding: 3, marginTop: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Edit Passenger
@@ -116,12 +123,16 @@ const EditPassengerForm = () => {
             </Grid>
           </Grid>
           <Box mt={3} display="flex" justifyContent="space-between">
-            <Button type="submit" variant="contained" color="primary">
-              Update Passenger
-            </Button>
-            <Button onClick={() => navigate('/passengers')} variant="contained" color="secondary">
-              Go Back
-            </Button>
+            {auth && (
+              <Button type="submit" variant="contained" color="primary">
+                Update Passenger
+              </Button>
+            )}
+            <Link to={`../..`} style={{ textDecoration: 'none' }}>
+              <Button variant="contained" color="secondary">
+                Go Back
+              </Button>
+            </Link>
           </Box>
         </form>
       </Paper>

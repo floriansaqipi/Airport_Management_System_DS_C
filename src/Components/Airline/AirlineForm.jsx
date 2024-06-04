@@ -1,15 +1,20 @@
 import React from 'react';
 import { Button, TextField, Container, Typography, Box, Paper, Grid } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useRouteLoaderData, useNavigate, useLocation } from 'react-router-dom';
 
 const AirlineForm = ({ airline, setAirline, handleSubmit, title, submitButtonLabel, errors, setErrors }) => {
+  const auth = useRouteLoaderData('root');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || '/airlines';
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setAirline(prevAirline => ({
       ...prevAirline,
       [name]: value
     }));
-    
+
     if (name === 'code') {
       if (value.length !== 5) {
         setErrors(prevErrors => ({
@@ -37,7 +42,7 @@ const AirlineForm = ({ airline, setAirline, handleSubmit, title, submitButtonLab
     }
     if (!airline.code) {
       newErrors.code = 'Code is required';
-    } 
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -50,7 +55,7 @@ const AirlineForm = ({ airline, setAirline, handleSubmit, title, submitButtonLab
   };
 
   return (
-    <Container className='home' maxWidth="sm">
+    <Container maxWidth="sm">
       <Paper elevation={3} sx={{ padding: 3, marginTop: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           {title}
@@ -81,14 +86,18 @@ const AirlineForm = ({ airline, setAirline, handleSubmit, title, submitButtonLab
             </Grid>
           </Grid>
           <Box mt={3} display="flex" justifyContent="space-between">
-            <Button type="submit" variant="contained" color="primary">
-              {submitButtonLabel}
-            </Button>
-            <Link to={`/airlines`} style={{ textDecoration: 'none' }}>
-              <Button variant="contained" color="secondary" style={{ marginRight: '10px' }}>
-                Go Back
+            {auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE") && (
+              <Button type="submit" variant="contained" color="primary">
+                {submitButtonLabel}
               </Button>
-            </Link>
+            )}
+            <Button
+              onClick={() => navigate(from)}
+              variant="contained"
+              color="secondary"
+            >
+              Go Back
+            </Button>
           </Box>
         </form>
       </Paper>

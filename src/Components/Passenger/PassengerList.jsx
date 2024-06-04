@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink, useRouteLoaderData } from 'react-router-dom';
 import DataTable from '../../util/DataTable'; // Adjust the path based on your directory structure
 import { Container, Box, Typography, Button, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -8,6 +8,7 @@ import { apiService } from '../../util/apiService';
 
 export default function PassengerList() {
   const [passengers, setPassengers] = useState([]);
+  const auth = useRouteLoaderData('root');
 
   useEffect(() => {
     loadPassengers();
@@ -40,54 +41,69 @@ export default function PassengerList() {
       headerName: 'Name',
       width: 200,
       renderCell: (params) => (
-        <Link to={`/passenger-details/${params.row.passengerId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-          {params.row.name}
-        </Link>
+        auth ? (
+          <NavLink
+            to={`${params.row.passengerId}`}
+            state={{ from: '/passengers' }}
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
+            {params.row.name}
+          </NavLink>
+        ) : (<span>{params.row.name}</span>)
       )
     },
     { field: 'passportNumber', headerName: 'Passport Number', width: 200 },
     { field: 'nationality', headerName: 'Nationality', width: 150 },
     { field: 'contactDetails', headerName: 'Contact Details', width: 250 },
-    {
-      field: 'edit',
-      headerName: 'Edit',
-      width: 100,
-      renderCell: (params) => (
-          <Link to={`/edit-passenger/${params.row.passengerId}`} style={{ textDecoration: 'none' }}>
+  ];
+
+  if (auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE")) {
+    columns.push(
+      {
+        field: 'edit',
+        headerName: 'Edit',
+        width: 100,
+        renderCell: (params) => (
+          <NavLink to={`${params.row.passengerId}/edit`} style={{ textDecoration: 'none' }}>
             <IconButton color="primary">
               <EditIcon />
             </IconButton>
-          </Link>
-      )
-    },
-    {
-      field: 'delete',
-      headerName: 'Delete',
-      width: 100,
-      renderCell: (params) => (
+          </NavLink>
+        )
+      },
+      {
+        field: 'delete',
+        headerName: 'Delete',
+        width: 100,
+        renderCell: (params) => (
           <IconButton
             color="secondary"
             onClick={() => handleDeletePassenger(params.row.passengerId)}
           >
             <DeleteIcon />
           </IconButton>
-      )
-    }
-  ];
+        )
+      }
+    );
+  }
 
   return (
     <Container
-      className='home'
       maxWidth="lg">
-      <Box textAlign="center"> {/*mt={5} mb={2}*/}
+      <Box textAlign="center">
         <Typography variant="h4" component="h1" gutterBottom>
           Passenger List
         </Typography>
-        <Link to={`/register-passenger`} style={{ textDecoration: 'none' }}>
-          <Button variant="contained" color="primary" style={{ marginRight: '10px' }}>
-            Add Passenger
-          </Button>
-        </Link>
+        {auth && (auth.role === "ADMIN" || auth.role === "EMPLOYEE") && (
+          <NavLink
+            to={`new`}
+            style={{ textDecoration: 'none' }}
+          >
+            <Button variant="contained" color="primary" style={{ marginRight: '10px' }}>
+              Add Passenger
+            </Button>
+          </NavLink>
+        )}
       </Box>
       <DataTable
         rows={passengers}

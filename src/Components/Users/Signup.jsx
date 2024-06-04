@@ -4,7 +4,6 @@ import GlobalStyles from "@mui/joy/GlobalStyles";
 import CssBaseline from "@mui/joy/CssBaseline";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
-import Checkbox from "@mui/joy/Checkbox";
 import Divider from "@mui/joy/Divider";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
@@ -14,12 +13,16 @@ import Typography from "@mui/joy/Typography";
 import Stack from "@mui/joy/Stack";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
-import BadgeRoundedIcon from "@mui/icons-material/BadgeRounded";
 import logo from "../../assets/logo.png";
-import { icon } from "@fortawesome/fontawesome-svg-core";
 import { Link, useNavigate } from 'react-router-dom';
+import { apiService } from "../../util/apiService";
 
 const isEmpty = (value) => value.trim() === "";
+const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const isValidPassword = (password) =>
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
+const isValidPassportNumber = (passportNumber) =>
+  /^[A-Z0-9]{9}$/.test(passportNumber);
 
 function ColorSchemeToggle(props) {
   const { onClick, ...other } = props;
@@ -47,82 +50,79 @@ function ColorSchemeToggle(props) {
   );
 }
 
-export default function Login() {
+export default function Signup() {
   const [formInputsValidity, setFormInputsValidity] = useState({
+    name: true,
+    passportNumber: true,
+    nationality: true,
+    contactDetails: true,
     username: true,
     password: true,
+    confirmPassword: true,
   });
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [formValues, setFormValues] = useState({
+    name: "",
+    passportNumber: "",
+    nationality: "",
+    contactDetails: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+
+  const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-
-    const enteredUsernameIsValid = !isEmpty(username);
-    const enteredPasswordIsValid = !isEmpty(password);
-
+  
+    const enteredNameIsValid = !isEmpty(formValues.name);
+    const enteredPassportNumberIsValid = isValidPassportNumber(formValues.passportNumber);
+    const enteredNationalityIsValid = !isEmpty(formValues.nationality);
+    const enteredContactDetailsIsValid = isValidEmail(formValues.contactDetails);
+    const enteredUsernameIsValid = !isEmpty(formValues.username);
+    const enteredPasswordIsValid = isValidPassword(formValues.password);
+    const enteredConfirmPasswordIsValid = formValues.password === formValues.confirmPassword;
+  
     setFormInputsValidity({
+      name: enteredNameIsValid,
+      passportNumber: enteredPassportNumberIsValid,
+      nationality: enteredNationalityIsValid,
+      contactDetails: enteredContactDetailsIsValid,
       username: enteredUsernameIsValid,
       password: enteredPasswordIsValid,
+      confirmPassword: enteredConfirmPasswordIsValid,
     });
-
-    const formIsValid = enteredUsernameIsValid && enteredPasswordIsValid;
-
+  
+    const formIsValid = enteredNameIsValid && enteredPassportNumberIsValid && enteredNationalityIsValid && enteredContactDetailsIsValid && enteredUsernameIsValid && enteredPasswordIsValid && enteredConfirmPasswordIsValid;
+  
     if (!formIsValid) {
       return;
     }
+  
     try {
-      const response = await fetch("/api/public/auth/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("Invalid username or password!");
-        }
-        throw new Error("Login failed!");
-      }
-
-      const data = await response.json();
-      
-      const responseUser = await fetch(`/api/private/users/username/${username}`, {
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': `Bearer ${data.accessToken}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Error fetching data');
-      }
-
-      const responseUserData = await responseUser.json();
-
-      localStorage.setItem("token", data.accessToken);
-      localStorage.setItem("username", responseUserData.username)
-      localStorage.setItem("role", responseUserData.role.roleName)
-
-      const expiration = new Date();
-      expiration.setHours(expiration.getHours() + 1);
-      localStorage.setItem('expiration', expiration.toISOString());
-      
-      setSuccess("Login successful! Redirecting...");
-      navigate('/')
+      const response = await apiService.post('/public/auth/passengers/register', formValues);
+  
+      setSuccess("Signup successful! Redirecting to login...");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
     } catch (error) {
-      setError(error.message);
+      setError(error.message || "Signup failed!");
     }
   };
-
+  
+  
   return (
     <CssVarsProvider defaultMode="dark" disableTransitionOnChange>
       <CssBaseline />
@@ -168,13 +168,12 @@ export default function Login() {
             }}
           >
             <Box sx={{ gap: 2, display: "flex", alignItems: "center" }}>
-             
-                <IconButton
-                  variant="soft"
-                  color="primary"
-                  size="sm"
-                  style={{ maxHeight: "5px" }}
-                >
+              <IconButton
+                variant="soft"
+                color="primary"
+                size="sm"
+                style={{ maxHeight: "5px" }}
+              >
                 <Link to="/">
                   <img
                     src={logo}
@@ -185,10 +184,9 @@ export default function Login() {
                       width: "84px",
                     }}
                   />
-                </Link>  
-                </IconButton>
+                </Link>
+              </IconButton>
               <Typography level="title-lg">AMS</Typography>
-
             </Box>
             <ColorSchemeToggle />
           </Box>
@@ -218,12 +216,12 @@ export default function Login() {
             <Stack gap={4} sx={{ mb: 2 }}>
               <Stack gap={1}>
                 <Typography component="h1" level="h3">
-                  Sign in
+                  Sign up
                 </Typography>
                 <Typography level="body-sm">
-                  New to AMS?{" "}
-                  <Link to="/signup" level="title-sm">
-                    Sign up!
+                  Already have an account?{" "}
+                  <Link to="/login" level="title-sm">
+                    Sign in!
                   </Link>
                 </Typography>
               </Stack>
@@ -238,14 +236,70 @@ export default function Login() {
               or
             </Divider>
             <Stack gap={4} sx={{ mt: 2 }}>
-              <form onSubmit={handleLogin}>
+              <form onSubmit={handleSignup}>
+                <FormControl>
+                  <FormLabel>Name</FormLabel>
+                  <Input
+                    type="text"
+                    name="name"
+                    value={formValues.name}
+                    onChange={handleChange}
+                  />
+                  {!formInputsValidity.name && (
+                    <Typography color="error">
+                      Name field is empty!
+                    </Typography>
+                  )}
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Passport Number</FormLabel>
+                  <Input
+                    type="text"
+                    name="passportNumber"
+                    value={formValues.passportNumber}
+                    onChange={handleChange}
+                  />
+                  {!formInputsValidity.passportNumber && (
+                    <Typography color="error">
+                      Passport Number must be exactly 9 characters!
+                    </Typography>
+                  )}
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Nationality</FormLabel>
+                  <Input
+                    type="text"
+                    name="nationality"
+                    value={formValues.nationality}
+                    onChange={handleChange}
+                  />
+                  {!formInputsValidity.nationality && (
+                    <Typography color="error">
+                      Nationality field is empty!
+                    </Typography>
+                  )}
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Email</FormLabel>
+                  <Input
+                    type="email"
+                    name="contactDetails"
+                    value={formValues.contactDetails}
+                    onChange={handleChange}
+                  />
+                  {!formInputsValidity.contactDetails && (
+                    <Typography color="error">
+                      Please enter a valid email address!
+                    </Typography>
+                  )}
+                </FormControl>
                 <FormControl>
                   <FormLabel>Username</FormLabel>
                   <Input
                     type="text"
                     name="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={formValues.username}
+                    onChange={handleChange}
                   />
                   {!formInputsValidity.username && (
                     <Typography color="error">
@@ -258,18 +312,32 @@ export default function Login() {
                   <Input
                     type="password"
                     name="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={formValues.password}
+                    onChange={handleChange}
                   />
                   {!formInputsValidity.password && (
                     <Typography color="error">
-                      Password field is empty!
+                      Password must be at least 8 characters, include one uppercase letter, one lowercase letter, one number, and one special character!
+                    </Typography>
+                  )}
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <Input
+                    type="password"
+                    name="confirmPassword"
+                    value={formValues.confirmPassword}
+                    onChange={handleChange}
+                  />
+                  {!formInputsValidity.confirmPassword && (
+                    <Typography color="error">
+                      Passwords do not match!
                     </Typography>
                   )}
                 </FormControl>
                 <Stack gap={4} sx={{ mt: 2 }}>
                   <Button type="submit" fullWidth>
-                    Sign in
+                    Sign up
                   </Button>
                   {error && <Typography color="error">{error}</Typography>}
                   {success && (

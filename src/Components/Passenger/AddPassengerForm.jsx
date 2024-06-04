@@ -45,7 +45,7 @@ const AddPassengerForm = () => {
   };
 
   return (
-    <Container className='home' maxWidth="sm">
+    <Container maxWidth="sm">
       <Paper elevation={3} sx={{ padding: 3, marginTop: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Add Passenger
@@ -129,7 +129,11 @@ const AddPassengerForm = () => {
             <Button type="submit" variant="contained" color="primary">
               Add Passenger
             </Button>
-            <Button onClick={() => navigate('/passengers')} variant="contained" color="secondary">
+            <Button
+              onClick={() => navigate('..')}
+              variant="contained"
+              color="secondary"
+            >
               Cancel
             </Button>
           </Box>

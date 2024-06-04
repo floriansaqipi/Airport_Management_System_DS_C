@@ -8,58 +8,75 @@ import AirportList from "./Components/Airport/AirportList";
 import PassengerList from "./Components/Passenger/PassengerList";
 import EmployeeList from "./Components/Employee/EmployeeList";
 import UserList from "./Components/Users/UserList";
-import Login from "./Components/Users/Login"
-import Signup from "./Components/Passenger/Signup";
+import Login from "./Components/Users/Login";
+import Signup from "./Components/Users/Signup";
 import PassengerDetail from "./Components/Passenger/PassengerDetail";
 import EditPassengerFrom from "./Components/Passenger/EditPassengerForm";
 import AddPassengerForm from "./Components/Passenger/AddPassengerForm";
-import AirlineList from './Components/Airline/AirlineList';
-import AirlineDetail from './Components/Airline/AirlineDetail';
-import EditAirlineForm from './Components/Airline/EditAirlineForm';
-import AddAirlineForm from './Components/Airline/AddAirlineForm';
+import AirlineList from "./Components/Airline/AirlineList";
+import AirlineDetail from "./Components/Airline/AirlineDetail";
+import EditAirlineForm from "./Components/Airline/EditAirlineForm";
+import AddAirlineForm from "./Components/Airline/AddAirlineForm";
 import BaggageList from "./Components/Baggage/BaggageList";
-import BaggageDetails from './Components/Baggage/BaggageDetail';
-import EditBaggageForm from './Components/Baggage/EditBaggageForm';
-import AddBaggageForm from './Components/Baggage/AddBaggageForm';
+import BaggageDetails from "./Components/Baggage/BaggageDetail";
+import EditBaggageForm from "./Components/Baggage/EditBaggageForm";
+import AddBaggageForm from "./Components/Baggage/AddBaggageForm";
+import Tickets from "./Components/Tickets/Tickets";
+import BoardingPassList from "./Components/BoardingPass/BoardingPassList";
+import BoardingPassDetail from "./Components/BoardingPass/BoardingPassDetail";
+import AddBoardingPassForm from "./Components/BoardingPass/AddBoardingPassForm";
+import EditBoardingPassForm from "./Components/BoardingPass/EditBoardingPassForm";
+import AbilityList from "./Components/Ability/AbilityList"
+import { action as LogoutAction } from "./Components/Users/Logout";
+import { authLoader, checkAuthAdminLoader, checkAuthEmployeeLoader, checkAuthLoader } from './util/auth'
+import Roles from "./Components/Role/Roles";
+import { loader as rolesLoader, addRoleAction} from './Components/Role/Roles'
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
+    id: 'root',
+    loader: authLoader,
     children: [
       { index: true, element: <ActualHome /> },
       { path: "flights", element: <Flights /> },
-      // { path : 'tickets', element: <Tickets /> },
+      { path : 'tickets', element: <Tickets /> },
       { path: "airports", element: <AirportList /> },
+      { path: "abilities", element: <AbilityList /> },
       {
         path: "baggage",
         children: [
-          { index: true, element: <BaggageList /> },
+          { index: true, element: <BaggageList />, loader: checkAuthLoader },
           {
             path: ":baggageId",
             children: [
-              { index: true, element: <BaggageDetails /> },
-              { path: "edit", element: <EditBaggageForm /> },
+              { index: true, element: <BaggageDetails />, loader: checkAuthLoader},
+              { path: "edit", element: <EditBaggageForm />, loader: checkAuthLoader },
             ],
           },
           {
-            path: "new", element : <AddBaggageForm />
+            path: "new",
+            element: <AddBaggageForm />,
+            loader: checkAuthLoader
           },
         ],
       },
       {
         path: "passengers",
         children: [
-          { index: true, element: <PassengerList /> },
+          { index: true, element: <PassengerList />, loader: checkAuthEmployeeLoader },
           {
             path: ":passengerId",
             children: [
-              { index: true, element: <PassengerDetail /> },
-              { path: "edit", element: <EditPassengerFrom /> },
+              { index: true, element: <PassengerDetail />, loader: checkAuthEmployeeLoader },
+              { path: "edit", element: <EditPassengerFrom />, loader: checkAuthEmployeeLoader },
             ],
           },
           {
-            path: "new", element : <AddPassengerForm />
+            path: "new",
+            element: <AddPassengerForm />,
+             loader: checkAuthEmployeeLoader
           },
         ],
       },
@@ -71,20 +88,46 @@ const router = createBrowserRouter([
             path: ":airlineId",
             children: [
               { index: true, element: <AirlineDetail /> },
-              { path: "edit", element: <EditAirlineForm /> },
+              { path: "edit", element: <EditAirlineForm />, loader: checkAuthEmployeeLoader },
             ],
           },
           {
-            path: "new", element : <AddAirlineForm />
+            path: "new",
+            element: <AddAirlineForm />,
+            loader: checkAuthEmployeeLoader
           },
         ],
       },
-      { path: "employees", element: <EmployeeList /> },
-      { path: "users", element: <UserList /> },
-      { path: "signup", element: <Signup/> },
+      {
+        path: "boarding_passes",
+        children: [
+          { index: true, element: <BoardingPassList />, loader: checkAuthLoader },
+          {
+            path: ":boardingPassId",
+            children: [
+              { index: true, element: <BoardingPassDetail />, loader: checkAuthLoader },
+              { path: "edit", element: <EditBoardingPassForm />, loader: checkAuthLoader },
+            ],
+          },
+          {
+            path: "new",
+            element: <AddBoardingPassForm />,
+            loader: checkAuthLoader
+          },
+        ],
+      },
+      { path: "employees", element: <EmployeeList />, loader: checkAuthAdminLoader },
+      { path: "users", element: <UserList />, loader: checkAuthAdminLoader },
+      {
+        path: 'roles',
+        element: <Roles/>,
+        loader: rolesLoader,
+      },
+      { path: "logout", action: LogoutAction },
     ],
   },
-  { path: "/login", element: <Login /> },
+  { path: "/login", element: <Login />},
+  { path: "/signup", element: <Signup /> }
 ]);
 
 function App() {
