@@ -16,6 +16,11 @@ const validateField = (field) => {
   isMoreThanFiftyChars(field) ? 'Field should not exceed 50 characters' : '';
   return { valid, message };
 };
+const validate=(field)=>{
+  const valid =  !isMoreThanFiftyChars(field);
+  const message =  isMoreThanFiftyChars(field) ? 'Field should not exceed 50 characters' : '';
+  return { valid, message };
+}
 
 const AbilityModal = ({ isOpen, onClose, onSave, abilityData }) => {
   const [ability, setAbility] = useState({
@@ -53,7 +58,7 @@ const AbilityModal = ({ isOpen, onClose, onSave, abilityData }) => {
 
     const entityValidation = validateField(ability.entity);
     const verbValidation = validateField(ability.verb);
-    const fieldValidation = validateField(ability.field);
+    const fieldValidation = validate(ability.field);
 
     setFormInputsValidity({
       entity: entityValidation,
@@ -68,7 +73,9 @@ const AbilityModal = ({ isOpen, onClose, onSave, abilityData }) => {
         const abilityToSave = {
             ...ability,
             verb: ability.verb === 'ALL' ? null : ability.verb,
+            field: ability.field ===''?null:ability.field
           };
+          console.log(abilityToSave);
         if (ability.abilityId) {
           await apiService.put('/private/abilities', abilityToSave);
         } else {
