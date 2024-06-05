@@ -1,70 +1,50 @@
-# Getting Started with Create React App
+# Airport Management System Front-End Client
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+This project is a front-end client application for managing various aspects of airport operations, from ticket management to user authorization. The client is developed using React and communicates with a REST API built with Spring Boot, which is part of the same project. This front-end application provides an intuitive and efficient interface for handling airport management tasks.
 
-In the project directory, you can run:
+## Development and Task Management
 
-### `npm start`
+The development process was managed using Jira, where tasks were assigned, tracked, and completed. The team collaborated to create a stable version, which underwent testing before deployment.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. Manage flight tickets.
+2. User authorization and authentication.
+3. Generate QR codes for tickets.
+4. Interactive and dynamic user interface.
+5. Real-time updates and notifications.
 
-### `npm test`
+## Technical Aspect
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Framework:** React
+- **Component Library:** Material-UI
+- **Routing:** React Router DOM
+- **QR Code Generation:** QR Code Creator
 
-### `npm run build`
+React was chosen for its powerful libraries and ease of integration with REST APIs, along with its excellent documentation. It allows for efficient state management and component-based architecture, which enhances code reusability and maintainability. React's virtual DOM ensures high performance by minimizing direct manipulation of the actual DOM.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**Material-UI** was utilized because it provides a comprehensive set of components that are ready to use and customizable, speeding up the development process. It also ensures a consistent look and feel across the application with minimal effort.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**React Router DOM** simplifies the implementation of navigation and route management within the application. It supports nested routes and dynamic route matching, which are essential for managing complex user flows and ensuring that only authenticated users can access certain parts of the application. This library allows for smooth transitions between views without the need for page reloads, enhancing the user experience.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**QR Code Creator** is employed for generating QR codes for tickets, facilitating easy ticket verification and enhancing the boarding process. This functionality is critical for modernizing the ticketing system and improving efficiency at the airport.
 
-### `npm run eject`
+To ensure a smooth development workflow, the project setup includes tools like Webpack and Babel for module bundling and JavaScript transpilation. ESLint and Prettier are used for code quality and formatting, ensuring consistency and readability across the codebase. The use of Git and GitHub for version control allows for efficient collaboration among team members, with pull requests and code reviews helping maintain high code quality.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Requirements and How to Run the App
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Install Node.js on your machine.
+2. Clone the repository from github.com/floriansaqipi/Airport_Management_System_DS_C.
+3. Run `npm install` and `npm start` commands to start the application.
+4. Open your browser and visit `localhost:3000`.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Contributors
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+[Florian Saqipi](https://github.com/floriansaqipi/)
+[Gentrit Kryeziu](https://github.com/Gentrit851)
+[Ardit Gjyrevci](https://github.com/ArditGjyrevci)
+[Arianit Gashi](https://github.com/ArianitSGashi)
+[Ardi Zariqi](https://github.com/ArdiZariqi)
